@@ -493,7 +493,7 @@ class SiteController extends Controller
 		echo count($users);
 	}
 	public function actionCheckDebug(){
-		echo "debug!113";
+		echo "debug!new";
 	}
 	/*public function actionDownloadClinicsList(){
 		$reader = new CsvReader(Yii::app() -> basePath.'/../files/tests_clinics.csv');
