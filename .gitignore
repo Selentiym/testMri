@@ -19,3 +19,4 @@ protected/runtime/**/*
 #ignore the tokendata files
 *.tokendata
 *.pss.php
+files/
