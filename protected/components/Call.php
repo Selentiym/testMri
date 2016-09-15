@@ -19,8 +19,10 @@
 		public $research_type;
 		public $id_error;
 		public $IFromFile = false;
+		public $assignDate;
+		public $callTime;
 		public function __construct($array = array(), $header = array()){
-			$this -> array = $array;
+			$this->array = $array;
 			if ($header) {
 				$num = array_flip(array_map('trim',$header));
 				$this -> dateString = $array[$num["Дата"]];
@@ -120,23 +122,22 @@
 			//return true;
 		}
 		/**
-		 * @return integer - the year of the call
+		 * @return int - the year of the call
 		 */
 		public function getYear(){
-			//echo Setting::getYear();
 			return Setting::getYear();
-			//Пока что не доделано, поэтому тупо 2015
-			//return 2015;
 		}
 		/**
-		 * @return integer - the time of call.
+		 * @return int - the time of call.
 		 */
 		public function giveCallTime(){
-			return strtotime($this -> dateString.'.'.$this -> getYear());
-			//return ($this -> dateString.'.'.$this -> getYear());
+			if (!$this -> callTime) {
+				$this -> callTime = strtotime("12:00:00 ".$this->dateString . '.' . $this->getYear());
+			}
+			return $this -> callTime;
 		}
 		/**
-		 * @arg integer from - the earliest second call is ok
+		 * @arg int $from - the earliest second call is ok
 		 * @return boolean - whether the call is after $from
 		 */
 		public function checkLowerBoundary($from){
@@ -144,7 +145,7 @@
 			return ($time >= $from);
 		}
 		/**
-		 * @arg integer to - the latest second call is ok
+		 * @param int $to - the latest second call is ok
 		 * @return boolean - whether the call is before $to
 		 */
 		public function checkUpperBoundary($to){
@@ -183,7 +184,7 @@
 			}
 		}
 		/**
-		 * @return interger - the id of the type of call.
+		 * @return int - the id of the type of call.
 		 */
 		public function ClassifyId(){
 			return CallType::model() -> findByAttributes(array('string' => $this -> Classify())) -> id;
@@ -405,9 +406,9 @@
 		}
 		/**
 		 * Sets the attributes of the given BaseCall model with own attributes.
-		 * @arg object[BaseCall] record - the record attributes of which are to be set
+		 * @param BaseCall $record - the record attributes of which are to be set
 		 */
-		public function setRecordAttributes($record){
+		public function setRecordAttributes(BaseCall $record){
 			$record -> research_type = $this -> research_type;
 			$record -> i = $this -> i ? $this -> i : NULL;
 			$record -> j = $this -> j ? $this -> j : NULL;
@@ -423,8 +424,10 @@
 			$record -> report = $this -> report;
 			$record -> mangoTalker = $this -> mangoTalker;
 			$record -> comment = $this -> comment;
-			$record -> date = $this -> giveUnixTime();
-			
+			$record -> date = $this -> giveAssignDatePREG();
+			$time = $this -> giveCallTime();
+			$record -> calledDate = $this -> giveCallTime();
+
 			$owner = $this -> giveOwner();
 			
 			$record -> id_error = $this -> id_error;
@@ -433,6 +436,35 @@
 			//Если не смогли найти владельца, то не заполняем это поле.
 			$record -> id_user = $owner ? $owner -> id : NULL;
 			$record -> id_call_type = $this -> ClassifyId();
+
+			if (date("n",strtotime($this -> giveAssignDatePREG())) != date("n",strtotime($this -> giveCallTime()))) {
+				$record -> prev_month = 1;
+			}
+			$record -> type = get_class($this);
+		}
+		/**
+		 * Возвращаем время, на которое произошла запись.
+		 * @return int
+		 */
+		public function giveAssignDatePREG(){
+			if (!$this -> assignDate) {
+
+				$del = "(\.|,|\/| |:|\\\\)";
+				$dig = "(\d{1,2})";
+				$pattern = '/' . $dig . $del . $dig . $del . $dig . $del . $dig . '/';
+				preg_match('/' . $dig . $del . $dig . $del . $dig . $del . $dig . '/', $this -> report, $matches);
+				if ($matches[0]) {
+					$year = $this->getYear();
+					//Поправка на смену года.
+					if ($matches[7] < date("n",strtotime($this -> giveCallTime()))) {
+						$year ++;
+					}
+					$this -> assignDate = mktime($matches[1], $matches[3], 0, $matches[7], $matches[5], $year);
+				} else {
+					$this -> assignDate = $this->giveCallTime();
+				}
+			}
+			return $this -> assignDate;
 		}
 	}
 ?>

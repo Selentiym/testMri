@@ -21,6 +21,9 @@
  * @property integer $id_call_type
  * @property integer $id_user
  * @property string $date
+ * @property bool $prev_month
+ * @property string $calledDate
+ * @property string $type
  *
  * The followings are the available model relations:
  * @property User $idUser
@@ -219,9 +222,11 @@ class BaseCall extends UModel
 					//echo "next!";
 				}
 			}
-			//echo "beforesave";
 			if (is_int($this -> date)) {
 				$this -> date = new CDbExpression('FROM_UNIXTIME('.$this -> date.')');
+			}
+			if (is_int($this -> calledDate)) {
+				$this -> calledDate = new CDbExpression('FROM_UNIXTIME('.$this -> calledDate.')');
 			}//*/
 		}
 		return parent::beforeSave();
