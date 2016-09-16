@@ -71,7 +71,11 @@ return array(
 				
 				'print' => 'site/printDirections',
 				'print/<arg:\w+>' => 'site/printDirections',
-				
+
+				'stat/<action:(full)>/<from:\d*>/<to:\d*>'=>'stat/<action>',
+				'stat/<action:(full)>/<to:\d*>'=>'stat/<action>',
+				'stat/<action:(full)>'=>'stat/<action>',
+
 				'stat/<from:\d*>' => 'site/stat',
 				'stat/<arg:\w+>' => 'site/stat',
 				'stat/<from:\d*>/<to:\d*>' => 'site/stat',

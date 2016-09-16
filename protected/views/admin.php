@@ -10,6 +10,7 @@
             <div class="panel-body">
                 <?php echo CHtml::link('Статистика', Yii::app() -> baseUrl.'/allstat',array('class'=>"list-group-item")); ?>
                 <?php echo CHtml::link('Список звонков', Yii::app() -> baseUrl.'/allCalls',array('class'=>"list-group-item")); ?>
+                <?php echo CHtml::link('Статистика по линиям', Yii::app() -> baseUrl.'/stat/full',array('class'=>"list-group-item")); ?>
                 <?php echo CHtml::link('Подробная информация о партнерах', Yii::app() -> baseUrl.'/userlist',array('class'=>"list-group-item")) ?>
                 <?php echo CHtml::link('Действия', Yii::app() -> baseUrl.'/activeuserlist',array('class'=>"list-group-item")) ?>
                 <?php echo CHtml::link('Шахматка', Yii::app() -> baseUrl.'/chess',array('class'=>"list-group-item")) ?>

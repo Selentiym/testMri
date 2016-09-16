@@ -145,7 +145,7 @@ class Data extends DataFromCsvFile {
 		//Получили все возможные типы звонков.
 		$types = CallType::model() -> findAll();
 		//Устанавливаем временные границы
-		$criteria = BaseCall::giveCriteriaForTimePeriodStatic($from, $to);
+		$criteria = BaseCall::giveCriteriaForTimePeriod($from, $to);
 		$criteria->compare('id_user', $user->id);
 		$criteria->compare('id_call_type', ':typeId');
 		//Для еще большей оптимизации можно тут добавить Singleton для $types,

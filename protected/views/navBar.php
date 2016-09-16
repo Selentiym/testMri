@@ -2,6 +2,9 @@
 /**
  * @type User $user
  */
+if (!$user) {
+    $user = User::model() -> findByPk(Yii::app() -> user -> getId());
+}
 ?>
 <nav class="navbar navbar-default">
     <div class="container-fluid">

@@ -265,32 +265,18 @@ class BaseCall extends UModel
 		}
 	}
 	/**
-	 * @arg integer from - the time to search from
-	 * @arg integer to - the time to search to
+	 * @arg int from - the time to search from
+	 * @arg int to - the time to search to
+	 * @arg string $attr - attribute the condition is set on
 	 * @return object[CDbCRiteria]
 	 */
-	public function giveCriteriaForTimePeriodStatic($from = NULL, $to = NULL){
+	public static function giveCriteriaForTimePeriod($from = NULL, $to = NULL, $attr="date"){
 		$criteria = new CDbCriteria;
 		if ((int)($from)) {
-			$criteria -> addCondition('date >= FROM_UNIXTIME('.$from.')');
+			$criteria -> addCondition($attr.' >= FROM_UNIXTIME('.$from.')');
 		}
 		if ((int)($to)) {
-			$criteria -> addCondition('date < FROM_UNIXTIME('.$to.')');
-		}
-		return $criteria;
-	}
-	/**
-	 * @arg integer from - the time to search from
-	 * @arg integer to - the time to search to
-	 * @return object[CDbCRiteria]
-	 */
-	public function giveCriteriaForTimePeriod($from = NULL, $to = NULL){
-		$criteria = new CDbCriteria;
-		if ((int)($from)) {
-			$criteria -> addCondition('date >= FROM_UNIXTIME('.$from.')');
-		}
-		if ((int)($to)) {
-			$criteria -> addCondition('date < FROM_UNIXTIME('.$to.')');
+			$criteria -> addCondition($attr.' < FROM_UNIXTIME('.$to.')');
 		}
 		return $criteria;
 	}
@@ -351,5 +337,18 @@ class BaseCall extends UModel
 			}
 			return $rez;
 		}
+	}
+	/**
+	 * @param int[2] $range time range, must have from and to attrs set.
+	 * @param CDbCriteria $criteria
+	 * @param string $attr attr which to set time condition to
+	 * @return int
+	 */
+	public static function callsInPeriod($range, $criteria = NULL, $attr = NULL){
+		if (!is_a($criteria, "CDbCriteria")) {
+			$criteria = new CDbCriteria();
+		}
+		$criteria -> mergeWith(StatCall::giveCriteriaForTimePeriod($range["from"], $range["to"], $attr));
+		return static::model() -> count($criteria);
 	}
 }

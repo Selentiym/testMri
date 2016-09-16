@@ -10,6 +10,7 @@
  */
 class CallType extends UModel
 {
+	public static $numbers;
 	/**
 	 * @return string the associated database table name
 	 */
@@ -98,7 +99,14 @@ class CallType extends UModel
 	 * @arg string string - string that defines the type od the call.
 	 */
 	public function getNumber($string) {
-		$model = $this -> findByAttributes(array('string' => $string));
-		return $model -> id;
+		if (!self::$numbers) {
+			foreach (self::model() -> findAll() as $model){
+				/**
+				 * @type CallType $model
+				 */
+				self::$numbers[$model -> string] = $model -> id;
+			}
+		}
+		return self::$numbers[$string];
 	}
 }

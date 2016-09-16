@@ -148,4 +148,24 @@ class UserPhone extends UModel
 			}
 		}
 	}
+	/**
+	 *
+	 * @param int[2] $range time range, must have from and to attrs set.
+	 * @param CDbCriteria|int[] $types if array - the criteria for call types generated
+	 * @param string $attr attr which to set time condition to
+	 * @return int
+	 */
+	public function countCalls($range, $types, $attr = "date"){
+		if (!is_a($types,"CDbCriteria")) {
+			$criteria = new CDbCriteria();
+			if (!empty($types)) {
+				$criteria->addInCondition("id_call_type", $types);
+			}
+		} else {
+			$criteria = $types;
+		}
+
+		$criteria -> compare("i", $this -> i);
+		return StatCall::callsInPeriod($range,$criteria,$attr);
+	}
 }
