@@ -12,6 +12,18 @@ if (Yii::app() -> user -> checkAccess("admin")):
  */
 $datepicker = $this -> renderPartial("//_datepicker",["get" => $get, "from" => $from, "to" => $to,"url" => Yii::app() -> baseUrl."/stat/full/%startTime%/%endTime%"],true);
 ?>
+    <h1>Статистика по линиям (по дате звонка)</h1>
+    Подгрузить статистику из googleDoc (сохраняется в базе) за:
+    <?php
+    $this -> renderPartial("//stat/_statButton",[
+        "text" => "Прошлый месяц",
+        "time" => strtotime("last month")
+    ]);
+    $this -> renderPartial("//stat/_statButton",[
+        "text" => "Этот месяц",
+        "time" => time()
+    ]);
+    ?>
     <div><?php echo $datepicker; ?></div>
     <?
     $range = ["from" => $_GET["from"], "to" => $_GET["to"]];
@@ -21,7 +33,6 @@ $datepicker = $this -> renderPartial("//_datepicker",["get" => $get, "from" => $
     $arr[] = CallType::model()->getNumber("verifyed");
     $arr[] = CallType::model()->getNumber("cancelled");
     $attr = "calledDate";
-    echo "<h1>Статистика по линиям (по дате звонка)</h1>";
     echo "<table class='table table-bordered'>";
     echo "<tr><td>Линия</td><td>Звонков</td><td>Записей</td></tr>";
     foreach (UserPhone::model() -> findAll() as $p) {

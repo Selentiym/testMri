@@ -22,6 +22,20 @@ class StatController extends Controller {
                 'modelClass' => 'User',
                 'view' => '//stat/full'
             ),
+            'showDiff' => array(
+                'class' => 'application.controllers.site.FileViewAction',
+				'access' => function () {return Yii::app() -> user -> checkAccess('admin');},
+                'view' => '//stat/linedDifference'
+            ),
 		);
+	}
+	public function actionLoadStatistics(){
+		$this -> renderPartial("//navBar");
+		echo '<a href="'.Yii::app() -> baseUrl."/stat/full".'">К списку линий</a><br/>';
+		if ($_GET["time"] > 24*3600*10) {
+			GDCall::importFromGoogleDoc($_GET["time"]);
+		} else {
+			echo "Ошибка в формате времени.";
+		}
 	}
 }

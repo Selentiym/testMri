@@ -124,7 +124,7 @@ class GDCall extends Call{
                         $call->setRecordAttributes($stCall);
                         if ($stCall->save()) {
                             $saved ++;
-                            echo $stCall -> id."<br/>";
+                            //echo $stCall -> id."<br/>";
                         } else {
                             $notSaved ++;
                         }

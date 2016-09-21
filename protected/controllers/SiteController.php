@@ -495,8 +495,8 @@ class SiteController extends Controller
 	public function actionCheckDebug(){
 		echo "debug!new";
 	}
-	public function actionCheckApi(){
-		GDCall::importFromGoogleDoc(strtotime("2016-08-08 12:00:00"));
+	public function actionCheck(){
+
 	}
 	/*public function actionDownloadClinicsList(){
 		$reader = new CsvReader(Yii::app() -> basePath.'/../files/tests_clinics.csv');
