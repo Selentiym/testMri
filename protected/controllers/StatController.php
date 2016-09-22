@@ -1,6 +1,7 @@
 <?php
 
 class StatController extends Controller {
+	public $layout='//layouts/site.php';
 	// Uncomment the following methods and override them if needed
 	/*public function filters()
 	{
@@ -30,7 +31,7 @@ class StatController extends Controller {
 		);
 	}
 	public function actionLoadStatistics(){
-		$this -> renderPartial("//navBar");
+		$this -> render("//navBar");
 		echo '<a href="'.Yii::app() -> baseUrl."/stat/full".'">К списку линий</a><br/>';
 		if ($_GET["time"] > 24*3600*10) {
 			GDCall::importFromGoogleDoc($_GET["time"]);

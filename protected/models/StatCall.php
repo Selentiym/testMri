@@ -24,7 +24,7 @@ class StatCall extends BaseCall {
     {
         return parent::model($className);
     }
-    public static function compareStats(&$oCalls, &$pCalls, $range,UserPhone $lineObj, &$oCallsDel, &$pCallsDel){
+    public static function compareStats(&$oCalls, &$pCalls, $range,UserPhone $lineObj, &$oCallsDel, &$pCallsDel, $attr){
         $oCallsDel = [];
         $pCallsDel = [];
         if (!$lineObj) {
@@ -39,12 +39,13 @@ class StatCall extends BaseCall {
             /*$line = "78124071126";
             $line = "78124071024";*/
             $line = $lineObj -> number;
+            $tr = ["calledDate" => "call","date"=>"assign"];
             $params = [
                 "dateFrom" => $range["from"],
                 "dateTo" => $range["to"],
                 "line" => $line,
                 "key" => require_once("omri.pss.php"),
-                "type" => "call"
+                "type" => $tr[$attr]
             ];
             $url = 'http://o.mrimaster.ru/api/contacts?'.http_build_query($params);
             curl_setopt($curl, CURLOPT_URL, $url);
@@ -53,12 +54,9 @@ class StatCall extends BaseCall {
             $oCalls = json_decode($out);
 
             if ($lineObj) {
-                $attr = "calledDate";
                 $crit = StatCall::giveCriteriaForTimePeriod($range["from"], $range["to"],$attr);
                 $crit->compare("i", $lineObj->i);
                 $pCalls = StatCall::model()->findAll($crit);
-                //var_dump($oCalls);
-                //var_dump($pCalls);
                 $oWas = count($oCalls);
                 $pWas = count($pCalls);
                 //function compareOandP(&$oCalls,&$pCalls, $attr){
@@ -69,7 +67,11 @@ class StatCall extends BaseCall {
                                 continue;
                             }
                             $oT = strtotime($pCall->$attr);
-                            $pT = strtotime($oCall->callDate);
+                            if ($attr == "date") {
+                                $pT = strtotime($oCall->appointmentTime);
+                            } else {
+                                $pT = strtotime($oCall->callDate);
+                            }
                             if (abs($oT - $pT) > 3600 * 12) {
                                 continue;
                             }

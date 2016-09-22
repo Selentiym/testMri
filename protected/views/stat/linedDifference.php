@@ -8,6 +8,13 @@
 
 if (Yii::app() -> user -> checkAccess("admin")):
     $this -> renderPartial('//navBar',array('button' => 'no'));
+
+    Yii::app()->user->setState("dateAttr", $_GET["attr"], "calledDate");
+    $attr = Yii::app() -> user -> getState("dateAttr","calledDate");
+    if (!in_array($attr,["calledDate","date"])) {
+        $attr = "calledDate";
+    }
+
     /**
      * @type Controller $this
      */
@@ -15,12 +22,13 @@ if (Yii::app() -> user -> checkAccess("admin")):
     $range = ["from" => $_GET["from"], "to" => $_GET["to"]];
     $lineObj = UserPhone::model() -> findByAttributes(["number" => $_GET["line"]]);
     if ($lineObj) :
-        StatCall::compareStats($oCalls, $pCalls, $range, $lineObj, $oCallsDel, $pCallsDel);
+        StatCall::compareStats($oCalls, $pCalls, $range, $lineObj, $oCallsDel, $pCallsDel, $attr);
 
     ?>
         <h1>Сравнение по линии <?php echo $lineObj -> number; ?></h1>
         <a href="<?php echo Yii::app() -> baseUrl."/stat/full"; ?>">К списку линий</a>
-    <div><?php echo $datepicker; ?></div>
+        <?php $this -> renderPartial('//stat/attrButton',["attr" => $attr]); ?>
+        <div><?php echo $datepicker; ?></div>
         <div>
             <?php $this -> renderPartial("//stat/compareCalls",[
                 "id" => "ExtraTable",

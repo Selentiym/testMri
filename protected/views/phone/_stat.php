@@ -26,4 +26,5 @@ if ($allCalls == 0) {
             ]
         )); ?>
     </td>
-    <td><?php echo $allCalls; ?></td><td><?php echo $assignedCalls." (".$percent."%)"; ?></td></tr>
+    <td><?php echo $allCalls; ?></td><td><?php echo $assignedCalls." (".$percent."%)"; ?></td>
+</tr>
