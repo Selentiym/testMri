@@ -402,17 +402,16 @@ class DataFromCsvFile {
 					//Если указанный в файле номер уже занесен в базу, то ищем запись. Если же нет в базе, то создаем.
 					if (!$record = $input -> record()) {
 						$record = new ClientPhone();
+						$record = $input -> setRecordAttributes($record);
+						//То есть не меняем номер, если звонок уже найден.
+						//Таким образом получаем привязку по первому звонку.
 					}
-					$record = $input -> setRecordAttributes($record);
-					//var_dump($record);
+
 					//Если удачно присвоили атрибуты, то сохраняем.
 					if ($record) {
 						$record -> save();
-						//echo "to save!<br/>";
 					}
-				}/* else {
-					echo "no from attr";
-				}*/
+				}
 			}
 			//echo "Обработано {$num} строк.";
 			return true;
