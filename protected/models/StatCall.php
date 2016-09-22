@@ -43,7 +43,8 @@ class StatCall extends BaseCall {
                 "dateFrom" => $range["from"],
                 "dateTo" => $range["to"],
                 "line" => $line,
-                "key" => require_once("omri.pss.php")
+                "key" => require_once("omri.pss.php"),
+                "type" => "call"
             ];
             $url = 'http://o.mrimaster.ru/api/contacts?'.http_build_query($params);
             curl_setopt($curl, CURLOPT_URL, $url);
