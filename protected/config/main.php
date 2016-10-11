@@ -72,9 +72,9 @@ return array(
 				'print' => 'site/printDirections',
 				'print/<arg:\w+>' => 'site/printDirections',
 
-				'stat/<action:(full|showDiff|loadStatistics)>/<from:\d*>/<to:\d*>'=>'stat/<action>',
-				'stat/<action:(full|showDiff|loadStatistics)>/<to:\d*>'=>'stat/<action>',
-				'stat/<action:(full|showDiff|loadStatistics)>'=>'stat/<action>',
+				'stat/<action:(full|showDiff|loadStatistics|mangoCalls)>/<from:\d*>/<to:\d*>'=>'stat/<action>',
+				'stat/<action:(full|showDiff|loadStatistics|mangoCalls)>/<to:\d*>'=>'stat/<action>',
+				'stat/<action:(full|showDiff|loadStatistics|mangoCalls)>'=>'stat/<action>',
 
 				'stat/<from:\d*>' => 'site/stat',
 				'stat/<arg:\w+>' => 'site/stat',

@@ -28,6 +28,11 @@ class StatController extends Controller {
 				'access' => function () {return Yii::app() -> user -> checkAccess('admin');},
                 'view' => '//stat/linedDifference'
             ),
+            'mangoCalls' => array(
+                'class' => 'application.controllers.site.FileViewAction',
+				'access' => function () {return Yii::app() -> user -> checkAccess('admin');},
+                'view' => '//stat/mangoCalls'
+            ),
 		);
 	}
 	public function actionLoadStatistics(){
@@ -37,6 +42,44 @@ class StatController extends Controller {
 			GDCall::importFromGoogleDoc($_GET["time"]);
 		} else {
 			echo "Ошибка в формате времени.";
+		}
+	}
+	public function actionLoadMango(){
+
+		if( $curl = curl_init() ) {
+
+			$params = array_filter([
+					'dateFrom' => $from,
+					'dateTo' => $to,
+				//'key' => "950fc1f2cef61dcbb9252cdd66a4899e",
+					'key' => OmriPss::pss(),
+					'city' => 1
+			]);
+
+			$url = 'http://new.web-utils.ru/api/calls?'.http_build_query($params);
+			curl_setopt($curl, CURLOPT_URL, $url);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
+			$out = curl_exec($curl);
+			$mCalls = json_decode($out);
+			foreach ($mCalls as $mCall) {
+				//Добавляем только если не найдено
+				if (!(mCall::model() -> findByPk($mCall -> id))) {
+					$b = new mCall();
+					$b -> id = $mCall -> id;
+					$b -> line = $mCall -> line;
+					$b -> fromPhone = $mCall -> fromPhone;
+					$b -> toPhone = $mCall -> toPhone;
+					$b -> direction = $mCall -> direction;
+					$b -> status = $mCall -> status;
+					$b -> duration = $mCall -> duration;
+					$b -> type = $mCall -> type;
+					if ($ph = UserPhone::givePhoneByNumber($b -> line)) {
+						$b -> i = $ph -> i;
+					}
+					$b -> save();
+				}
+			}
+			curl_close($curl);
 		}
 	}
 }

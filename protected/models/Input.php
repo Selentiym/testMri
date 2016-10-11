@@ -45,7 +45,7 @@
 		 */
 		public function givePhone(){
 			if (!isset($this -> phone)) {
-				$this -> phone = UserPhone::model() -> findByAttributes(array('number' => $this -> to));
+				$this -> phone = UserPhone::givePhoneByNumber($this -> to);
 			}
 			return $this -> phone;
 		}

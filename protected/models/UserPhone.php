@@ -168,4 +168,14 @@ class UserPhone extends UModel
 		$criteria -> compare("i", $this -> i);
 		return StatCall::callsInPeriod($range,$criteria,$attr);
 	}
+
+	/**
+	 * @param string $number
+	 * @return UserPhone|null
+	 */
+	public static function givePhoneByNumber($number){
+		//Тут еще можно попробовать обрезать какую-то часть, например во избежание
+		// проблем с +7 или 8
+		return UserPhone::model() -> findByAttributes(array('number' => $number));
+	}
 }
