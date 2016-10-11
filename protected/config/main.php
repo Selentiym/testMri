@@ -161,10 +161,10 @@ return array(
             'charset' => 'utf8',
         ),*/
 		'db'=>array(
-            'connectionString' => 'mysql:host=localhost;dbname=cq85254_calls',
+            'connectionString' => 'mysql:host=localhost;dbname=cq97848_calls',
             'tablePrefix' => 'tbl_',
             'emulatePrepare' => true,
-            'username' => 'cq85254_calls',
+            'username' => 'cq97848_calls',
             'password' => 'kicker',
             'charset' => 'utf8',
         ),
