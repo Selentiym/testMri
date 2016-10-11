@@ -24,8 +24,10 @@ Yii::app() -> getClientScript() -> registerScript('checkboxes','
 $pageSize = 10;
 $criteria = new CDbCriteria;
 $criteria -> addCondition ('id_user IS NULL');
+$ids = [1,3,6];
 //Только подтвержденные, отмененные и записанные
-$criteria -> addInCondition('id_call_type',[1,3,6]);
+$criteria -> addInCondition('id_call_type',$ids);
+
 if (!$_GET["page"]) {
 	$_GET["page"] = Yii::app()->session->get('errorPage');
 }
@@ -35,7 +37,7 @@ $criteria -> limit = $pageSize;
 $criteria -> offset = ($page - 1) * $pageSize;
 $criteria -> order = 'date DESC';
 $calls = BaseCall::model() -> findAll($criteria);
-$command = Yii::app()->db->createCommand('SELECT COUNT(`id`) FROM {{call}} WHERE `id_user` IS NULL');
+$command = Yii::app()->db->createCommand('SELECT COUNT(`id`) FROM {{call}} WHERE `id_user` IS NULL AND `id_call_type` IN ('.implode(',',$ids).')');
 $maximum = $command -> queryScalar();
 /*Yii::app() -> getClientScript() -> registerScript('clickScript',"
 	$('.assign').click(function(){
@@ -78,7 +80,6 @@ if (is_array($calls)&&(!empty($calls))):
         <th>H</th>
         <th>Медпред</th>
         <th>Комментарий</th>
-        <th>Исследование</th>
         <th>Телефон клиента</th>
         <th>Отчет</th>
         <th>ФИО</th>

@@ -32,12 +32,11 @@
 <td><?php echo $call -> H; ?></td>
 <td><?php echo $call -> giveStringFromArray($phone -> main_users,',','fio'); ?></td>
 <td><?php echo $call -> comment; ?></td>
-<td><?php echo $call -> research_type; ?></td>
-<td><?php echo $call -> clinic; ?></td>
-<td><?php echo $call -> number; ?></td>
+<td><?php echo $call -> mangoTalker; ?></td>
 <td><?php echo $call -> giveReport(); ?></td>
 <td><?php echo $call -> fio; ?></td>
 <td><?php echo $call -> research_type; ?></td>
+<td><?php echo $call -> clinic; ?></td>
 <td><?php echo CHtml::link('del', Yii::app() -> baseUrl.'/deleteCall/'.$call -> id); ?></td>
 <td>
 <?php CHtml::activeDropDownListChosen2(User::model(), 'id',$users, array('class' => 'select2','name' => 'id_user', 'id' => 'AssignCall'.$call -> id, 'multiple' => 'multiple'), array(), '{
