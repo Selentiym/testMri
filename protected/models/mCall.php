@@ -176,8 +176,8 @@ class mCall extends UModel
 	 * @return array
 	 */
 	public static function callsAverageByPeriod ($from, $to, $periodMins = 10) {
-		echo "from=$from&to=$to&periodMins=$periodMins";
-		$sql = "SELECT COUNT(`id`) as `count`, @mins := FLOOR((UNIX_TIMESTAMP(`date`)%(86400))/(60*$periodMins))*$periodMins as `minutesFromDaystart`, FLOOR(@mins/60) as `hours`, @mins%60 as `minutes` FROM `phone_call` WHERE `city_id`='1' AND `line` IN ('78123132704', '78122411052','78122411058') AND `date` > FROM_UNIXTIME($from) AND `date` < FROM_UNIXTIME($to) GROUP BY FLOOR((UNIX_TIMESTAMP(`date`)%(86400))/(60*$periodMins)) ORDER BY @mins ASC";
+		//echo "from=$from&to=$to&periodMins=$periodMins";
+		$sql = "SELECT COUNT(`id`) as `count`, @mins := FLOOR((UNIX_TIMESTAMP(`date`)%(86400))/(60*$periodMins))*$periodMins as `minutesFromDaystart`, FLOOR(@mins/60) as `hours`, @mins%60 as `minutes` FROM `tbl_mango_call` WHERE (`line` = '78123132704' OR `line` = '78122411052' OR `line` = '78122411058' ) AND `date` > FROM_UNIXTIME($from) AND `date` < FROM_UNIXTIME($to) GROUP BY FLOOR((UNIX_TIMESTAMP(`date`)%(86400))/(60*$periodMins)) ORDER BY @mins ASC";
 		//echo $sql;
 		//Yii::app() -> end();
 		$q = mysqli_query(MysqlConnect::getConnection(), $sql);
@@ -199,7 +199,7 @@ class mCall extends UModel
 				$cc ++;
 			}
 		}
-		echo $cc;
+		//echo $cc;
 		//var_dump($rez);
 		return $rez;
 	}

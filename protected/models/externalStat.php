@@ -16,7 +16,7 @@ class externalStat {
             $params['periodMins'] = $periodMins;
 
             $url = 'http://mrt-to-go.ru/site/GiveStatistics';
-            echo $url.'?'.http_build_query($params);
+            //echo $url.'?'.http_build_query($params);
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($params));
