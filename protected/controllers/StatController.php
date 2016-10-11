@@ -47,11 +47,11 @@ class StatController extends Controller {
 	public function actionLoadMango(){
 
 		if( $curl = curl_init() ) {
-
+			$from = $_GET["from"];
+			$to = $_GET["to"];
 			$params = array_filter([
 					'dateFrom' => $from,
 					'dateTo' => $to,
-				//'key' => "950fc1f2cef61dcbb9252cdd66a4899e",
 					'key' => OmriPss::pss(),
 					'city' => 1
 			]);
@@ -60,26 +60,37 @@ class StatController extends Controller {
 			curl_setopt($curl, CURLOPT_URL, $url);
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
 			$out = curl_exec($curl);
+			//echo $out;
+			//echo $url;
 			$mCalls = json_decode($out);
-			foreach ($mCalls as $mCall) {
-				//Добавляем только если не найдено
-				if (!(mCall::model() -> findByPk($mCall -> id))) {
-					$b = new mCall();
-					$b -> id = $mCall -> id;
-					$b -> line = $mCall -> line;
-					$b -> fromPhone = $mCall -> fromPhone;
-					$b -> toPhone = $mCall -> toPhone;
-					$b -> direction = $mCall -> direction;
-					$b -> status = $mCall -> status;
-					$b -> duration = $mCall -> duration;
-					$b -> type = $mCall -> type;
-					if ($ph = UserPhone::givePhoneByNumber($b -> line)) {
-						$b -> i = $ph -> i;
+			if (!empty($mCalls)) {
+				foreach ($mCalls as $mCall) {
+					//Добавляем только если не найдено
+					if (!(mCall::model()->findByPk($mCall->id))) {
+						$b = new mCall();
+						$b->id = $mCall->id;
+						$b->line = $mCall->line;
+						$b->fromPhone = $mCall->fromPhone;
+						$b->toPhone = $mCall->toPhone;
+						$b->direction = $mCall->direction;
+						$b->status = $mCall->status;
+						$b->duration = $mCall->duration;
+						$b->type = $mCall->type;
+						$b->date = $mCall->date;
+						if ($ph = UserPhone::givePhoneByNumber($b->line)) {
+							$b->i = $ph->i;
+						}
+						if (!$b -> save()) {
+							$err = $b -> getErrors();
+						}
 					}
-					$b -> save();
 				}
+			} else {
+
+				echo "No data!";
 			}
 			curl_close($curl);
+			$this -> redirect(Yii::app() -> createUrl('stat/mangoCalls', ['from' => $from, 'to' => $to]));
 		}
 	}
 }

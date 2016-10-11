@@ -176,18 +176,31 @@ class mCall extends UModel
 	 * @return array
 	 */
 	public static function callsAverageByPeriod ($from, $to, $periodMins = 10) {
-		$q = mysqli_query(MysqlConnect::getConnection(), "SELECT COUNT(`id`) as `count`, @mins := FLOOR((UNIX_TIMESTAMP(`date`)%(86400))/60*$periodMins)*$periodMins as `minutesFromDaystart`, FLOOR(@mins/60) as `hours`, @mins%60 as `minutes` FROM `phone_call` WHERE `city_id`='1' AND `date` > FROM_UNIXTIME($from) AND `date` < FROM_UNIXTIME($to) GROUP BY FLOOR((UNIX_TIMESTAMP(`date`)%(86400))/60*$periodMins)");
+		echo "from=$from&to=$to&periodMins=$periodMins";
+		$sql = "SELECT COUNT(`id`) as `count`, @mins := FLOOR((UNIX_TIMESTAMP(`date`)%(86400))/(60*$periodMins))*$periodMins as `minutesFromDaystart`, FLOOR(@mins/60) as `hours`, @mins%60 as `minutes` FROM `phone_call` WHERE `city_id`='1' AND `line` IN ('78123132704', '78122411052','78122411058') AND `date` > FROM_UNIXTIME($from) AND `date` < FROM_UNIXTIME($to) GROUP BY FLOOR((UNIX_TIMESTAMP(`date`)%(86400))/(60*$periodMins)) ORDER BY @mins ASC";
+		//echo $sql;
+		//Yii::app() -> end();
+		$q = mysqli_query(MysqlConnect::getConnection(), $sql);
 		$rez = [];
 		$mins = 0;
+
 		while($mins < 24*60) {
 			$key = date('G:i',$mins*60);
 			$rez[$key] = [$key, 0];
 			$mins += $periodMins;
 		}
+		$cc = 0;
 		while($arr = mysqli_fetch_array($q, MYSQLI_ASSOC)) {
+			//var_dump($arr);
 			$key = date('G:i',$arr['minutesFromDaystart']*60);
-			$rez[$key] = [$key, (int)$arr['count']];
+			$count = (int)$arr['count'];
+			if ($count > 0) {
+				$rez[$key] = [$key, $count];
+				$cc ++;
+			}
 		}
+		echo $cc;
+		//var_dump($rez);
 		return $rez;
 	}
 }

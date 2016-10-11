@@ -10,7 +10,7 @@
      protected $connection = false;
 
      private function __construct() {
-         $this -> connection = mysqli_connect('localhost','cq85254_calls', 'kicker','cq85254_calls');
+         $this -> connection = mysqli_connect('localhost','cq97848_calls', 'kicker','cq97848_calls');
 
      }
 
