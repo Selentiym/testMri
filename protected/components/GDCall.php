@@ -73,6 +73,7 @@ class GDCall extends Call{
         $this -> id_call_type = $this -> ClassifyId();
 
         $criteria -> addCondition('TO_DAYS(date) = TO_DAYS(FROM_UNIXTIME('.$this -> giveAssignDatePREG().'))');
+
         $criteria -> addCondition('TO_DAYS(calledDate) = TO_DAYS(FROM_UNIXTIME('.$this -> giveCallTime().'))');
 
         $criteria -> compare('fio', $this -> fio);

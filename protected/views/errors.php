@@ -24,6 +24,8 @@ Yii::app() -> getClientScript() -> registerScript('checkboxes','
 $pageSize = 10;
 $criteria = new CDbCriteria;
 $criteria -> addCondition ('id_user IS NULL');
+//Только подтвержденные, отмененные и записанные
+$criteria -> addInCondition('id_call_type',[1,3,6]);
 if (!$_GET["page"]) {
 	$_GET["page"] = Yii::app()->session->get('errorPage');
 }
