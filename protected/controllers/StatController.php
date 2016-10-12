@@ -45,7 +45,6 @@ class StatController extends Controller {
 		}
 	}
 	public function actionLoadMango(){
-
 		if( $curl = curl_init() ) {
 			$from = $_GET["from"];
 			$to = $_GET["to"];
@@ -86,7 +85,7 @@ class StatController extends Controller {
 					}
 				}
 			} else {
-
+				echo $url;
 				echo "No data!";
 			}
 			curl_close($curl);

@@ -183,7 +183,7 @@ class BaseCall extends UModel
 			$date_arr = array_map('trim',explode('\\', $date));
 		}
 		if ((count($date_arr) < 2)||(!(int)$date_arr[0])||(!(int)$date_arr[1])) {
-			new CustomFlash('error','BaseCall','FormatMistake','Не удалось определить дату, на которую записан клиент '.$this -> fio . '. Строка отчета: '.$this -> report.'. Один из корректных форматов отчета при записи это "<час>,<время> <день>,<месяц>". Важно, чтобы дату от времени отделял пробел!',true);
+			new CustomFlash('error','BaseCall','FormatMistake'.$this->fio,'Не удалось определить дату, на которую записан клиент '.$this -> fio . '. Строка отчета: '.$this -> report.'. Один из корректных форматов отчета при записи это "<час>,<время> <день>,<месяц>". Важно, чтобы дату от времени отделял пробел!',true);
 			//var_dump($this -> report);
 			//echo "oops";
 			//Yii::app() -> end();
