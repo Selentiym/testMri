@@ -495,8 +495,43 @@ class SiteController extends Controller
 	public function actionCheckDebug(){
 		echo "debug!new";
 	}
-	public function actionCheck(){
-
+	public function actionCheck () {
+		if( $curl = curl_init() ) {
+			/*$from = $_GET["from"];
+			$to = $_GET["to"];*/
+			$params = [
+					'dateFrom' => time() - 60*60*24*5,
+					'dateTo' => time(),
+					'key' => OmriPss::pss(),
+					'city' => 1
+			];
+			$url = "http://o.mrimaster.ru/api/forms?".http_build_query($params);
+			curl_setopt($curl, CURLOPT_URL, $url);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+			$out = curl_exec($curl);
+			$calls = json_decode($out);
+			foreach ($calls as $call) {
+				$stCall = new StatCall();
+				$stCall -> type = 'form';
+				$stCall -> date = new CDbExpression('FROM_UNIXTIME(\''.strtotime($call -> dateCreated).'\')');
+				$stCall -> report = $call -> description;
+				$stCall -> fio = $call -> name;
+				$stCall -> number = $call -> phone;
+				$stCall -> i = $call -> pid;
+				$criteria = new CDbCriteria();
+				$criteria -> compare('i', $stCall -> i);
+				$criteria -> compare('number', $stCall -> number);
+				$criteria -> compare('report', $stCall -> report);
+				$criteria -> addCondition('date = FROM_UNIXTIME('.strtotime($call -> dateCreated).')');
+				$rec = StatCall::model() -> find($criteria);
+				if (!$rec) {
+					if (!$stCall->save()) {
+						var_dump($stCall->getErrors());
+					}
+				}
+			}
+			curl_close($curl);
+		}
 	}
 	/*public function actionDownloadClinicsList(){
 		$reader = new CsvReader(Yii::app() -> basePath.'/../files/tests_clinics.csv');

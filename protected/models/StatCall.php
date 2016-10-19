@@ -96,4 +96,49 @@ class StatCall extends BaseCall {
             curl_close($curl);
         }
     }
+    public static function loadFormDataFromOmri($from, $to){
+        if( $curl = curl_init() ) {
+            /*$from = $_GET["from"];
+            $to = $_GET["to"];*/
+            $params = [
+                'dateFrom' => $from,
+                'dateTo' => $to,
+                'key' => OmriPss::pss(),
+                'city' => 1
+            ];
+            $url = "http://o.mrimaster.ru/api/forms?".http_build_query($params);
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            $out = curl_exec($curl);
+            $calls = json_decode($out);
+            foreach ($calls as $call) {
+                $stCall = new StatCall();
+                $stCall -> type = 'form';
+                $stCall -> date = new CDbExpression('FROM_UNIXTIME(\''.strtotime($call -> dateCreated).'\')');
+                $stCall -> report = $call -> description;
+                $stCall -> fio = $call -> name;
+                $stCall -> number = $call -> phone;
+                $stCall -> i = $call -> pid;
+                $criteria = new CDbCriteria();
+                $criteria -> compare('i', $stCall -> i);
+                $criteria -> compare('number', $stCall -> number);
+                $criteria -> compare('report', $stCall -> report);
+                $criteria -> addCondition('date = FROM_UNIXTIME('.strtotime($call -> dateCreated).')');
+                $rec = StatCall::model() -> find($criteria);
+                if (!$rec) {
+                    if (!$stCall->save()) {
+                        var_dump($stCall->getErrors());
+                    }
+                }
+            }
+            curl_close($curl);
+        }
+    }
+    public static function giveFormDataAverageByPeriod ($from, $to, $periodMins) {
+        $sql = "SELECT COUNT(`id`) as `count`, @mins := FLOOR((UNIX_TIMESTAMP(`date`)%(86400))/(60*$periodMins))*$periodMins as `minutesFromDaystart`, FLOOR(@mins/60) as `hours`, @mins%60 as `minutes` FROM `tbl_stat_call` WHERE `i` < 0 AND `type`='form' AND `date` > FROM_UNIXTIME($from) AND `date` < FROM_UNIXTIME($to) GROUP BY FLOOR((UNIX_TIMESTAMP(`date`)%(86400))/(60*$periodMins)) ORDER BY @mins ASC";
+        //echo $sql;
+        //Yii::app() -> end();
+        $q = mysqli_query(MysqlConnect::getConnection(), $sql);
+        return externalStat::AverageByPeriodFromSQLRez($q);
+    }
 }

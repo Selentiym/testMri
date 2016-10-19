@@ -89,7 +89,12 @@ class StatController extends Controller {
 				echo "No data!";
 			}
 			curl_close($curl);
+
+			//Вместе с Манго загружаем информацию по формам.
+			StatCall::loadFormDataFromOmri($from, $to);
+
 			$this -> redirect(Yii::app() -> createUrl('stat/mangoCalls', ['from' => $from, 'to' => $to]));
 		}
 	}
+
 }

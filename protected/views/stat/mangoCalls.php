@@ -16,24 +16,28 @@ $this -> renderPartial('//navBar',array('button' => 'no'));
 $datepicker = $this -> renderPartial("//_datepicker",["get" => $_GET, "from" => $from, "to" => $to,"url" => Yii::app() -> baseUrl."/stat/mangoCalls/%startTime%/%endTime%"],true);
 $range = ["from" => $_GET["from"], "to" => $_GET["to"]];
 $mrtToGo = externalStat::giveMrtToGoData($range["from"], $range["to"], 10);
+$onlineCalls = StatCall::giveFormDataAverageByPeriod($range["from"], $range["to"], 10);
 
-$data = array_values(mCall::callsAverageByPeriod($range['from'], $range['to']));
+$data = array_values(mCall::callsAverageByPeriod($range['from'], $range['to'], 10));
 $ratio = [];
+//var_dump($onlineCalls);
 foreach ($data as $d) {
     $name = $d[0];
     $v = (int)$mrtToGo->$name;
+    $sum = (int)$d[1] + $onlineCalls[$name][1];
     if ($v > 0) {
         $d[2] = $v;
-        $ratio[] = [$d[0],(float)$d[1]/$v];
+        $ratio[] = [$d[0],(float)$d[1]/$v,(float)($onlineCalls[$name][1])/$v,(float)$sum/$v];
     } else {
         $d[2] = 0;
-        $ratio[] = [$d[0],0];
+        $ratio[] = [$d[0],0,0,0];
     }
     $dataDraw[] = $d;
 }
 $data = [['Время','Звонки','Посещения']] + $dataDraw;
-$ratio = [['Время','Звонки/посещения']] + $ratio;
-//var_dump($ratio);
+$onlineDraw = array_values([['Время','Заявки']] + $onlineCalls);
+$ratio = [['Время','Звонки/посещения','Заявки/посещения','Сумма/посещения']] + $ratio;
+//var_dump($onlineDraw);
 //var_dump($data);
 
 /*$data = [
@@ -51,7 +55,10 @@ Yii::app() -> getClientScript() -> registerScript('drawChart',"
         drawAreaChart(".json_encode($data).",".json_encode($options).", $('#chart').get(0))
     });
     google.charts.setOnLoadCallback(function(){
-        drawAreaChart(".json_encode($ratio).",".json_encode($options).", $('#chart2').get(0))
+        drawAreaChart(".json_encode($onlineDraw).",".json_encode($options).", $('#chart2').get(0))
+    });
+    google.charts.setOnLoadCallback(function(){
+        drawAreaChart(".json_encode($ratio).",".json_encode($options).", $('#chart3').get(0))
     });
 ", CClientScript::POS_READY);
 
@@ -66,5 +73,8 @@ echo CHtml::link('Загрузить статистику', Yii::app() -> create
 
 </div>
 <div id="chart2">
+
+</div>
+<div id="chart3">
 
 </div>

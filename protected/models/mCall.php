@@ -181,26 +181,6 @@ class mCall extends UModel
 		//echo $sql;
 		//Yii::app() -> end();
 		$q = mysqli_query(MysqlConnect::getConnection(), $sql);
-		$rez = [];
-		$mins = 0;
-
-		while($mins < 24*60) {
-			$key = date('G:i',$mins*60);
-			$rez[$key] = [$key, 0];
-			$mins += $periodMins;
-		}
-		$cc = 0;
-		while($arr = mysqli_fetch_array($q, MYSQLI_ASSOC)) {
-			//var_dump($arr);
-			$key = date('G:i',$arr['minutesFromDaystart']*60);
-			$count = (int)$arr['count'];
-			if ($count > 0) {
-				$rez[$key] = [$key, $count];
-				$cc ++;
-			}
-		}
-		//echo $cc;
-		//var_dump($rez);
-		return $rez;
+		return externalStat::AverageByPeriodFromSQLRez($q);
 	}
 }
