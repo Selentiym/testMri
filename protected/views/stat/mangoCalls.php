@@ -12,13 +12,16 @@ $this -> renderPartial('//navBar',array('button' => 'no'));
 /**
  * @type Controller $this
  */
-
+$periodMins = $_GET["period"];
+if (($periodMins < 1) || ($periodMins > 60*24)) {
+    $periodMins = 10;
+}
 $datepicker = $this -> renderPartial("//_datepicker",["get" => $_GET, "from" => $from, "to" => $to,"url" => Yii::app() -> baseUrl."/stat/mangoCalls/%startTime%/%endTime%"],true);
 $range = ["from" => $_GET["from"], "to" => $_GET["to"]];
-$mrtToGo = externalStat::giveMrtToGoData($range["from"], $range["to"], 10);
-$onlineCalls = StatCall::giveFormDataAverageByPeriod($range["from"], $range["to"], 10);
+$mrtToGo = externalStat::giveMrtToGoData($range["from"], $range["to"], $periodMins);
+$onlineCalls = StatCall::giveFormDataAverageByPeriod($range["from"], $range["to"], $periodMins);
 
-$data = array_values(mCall::callsAverageByPeriod($range['from'], $range['to'], 10));
+$data = array_values(mCall::callsAverageByPeriod($range['from'], $range['to'], $periodMins));
 $ratio = [];
 //var_dump($onlineCalls);
 foreach ($data as $d) {
@@ -68,7 +71,10 @@ echo $datepicker;
 //mCall::loadDataByApi($range["from"], $range["to"]);
 echo CHtml::link('Загрузить статистику', Yii::app() -> createUrl('stat/loadMango',['from' => $range['from'], 'to' => $range['to']]));
 ?>
-
+<form>
+    <input type="text" placeholder="Период детализации (в минутах)" name="period" value="<?php echo $periodMins; ?>"/>
+    <input type="submit" value="OK"/>
+</form>
 <div id="chart">
 
 </div>

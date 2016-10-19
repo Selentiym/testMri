@@ -139,6 +139,6 @@ class StatCall extends BaseCall {
         //echo $sql;
         //Yii::app() -> end();
         $q = mysqli_query(MysqlConnect::getConnection(), $sql);
-        return externalStat::AverageByPeriodFromSQLRez($q);
+        return externalStat::AverageByPeriodFromSQLRez($q, $periodMins);
     }
 }
