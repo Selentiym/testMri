@@ -34,7 +34,7 @@ class Setting extends UModel
 			array('comment_stat', 'length', 'max'=>1024),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('comment_stat, allowMDCreateAddresses, comment_show,showClinicStat,year', 'safe'),
+			array('comment_stat, allowMDCreateAddresses, comment_show, showClinicStat, year, shortTableName', 'safe'),
 		);
 	}
 	/**
@@ -101,5 +101,46 @@ class Setting extends UModel
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	public static function getShortTableName () {
+		$rez = self::model() -> find() -> shortTableName;
+		if (!$rez) {
+			return 'call';
+		} else {
+			return $rez;
+		}
+	}
+
+	/**
+	 * @return StatCall|BaseCall
+	 */
+	public static function getCallModel () {
+		$class = self::getCallClass();
+		return $class::model();
+	}
+	/**
+	 * @return string
+	 */
+	public static function getCallClass () {
+		switch (self::getShortTableName()) {
+			case 'stat_call':
+				return 'StatCall';
+				break;
+			default:
+				return 'BaseCall';
+				break;
+		}
+	}
+	public static function getDataObj() {
+		switch (self::getShortTableName()) {
+			case "stat_call":
+				$class = "DataGD";
+				break;
+			default:
+				$class = "Data";
+				break;
+		}
+		return new $class;
 	}
 }

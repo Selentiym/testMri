@@ -36,7 +36,8 @@ class StatController extends Controller {
 		);
 	}
 	public function actionLoadStatistics(){
-		$this -> render("//navBar");
+		$this -> layout = '//layouts/site.php';
+		$this -> renderPartial("//navBar");
 		echo '<a href="'.Yii::app() -> baseUrl."/stat/full".'">К списку линий</a><br/>';
 		if ($_GET["time"] > 24*3600*10) {
 			GDCall::importFromGoogleDoc($_GET["time"]);

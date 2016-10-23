@@ -2,7 +2,7 @@
 
 	$admin = User::model() -> findByPk(Yii::app() -> user -> getId());
 	$this -> renderPartial('//navBar',array('user' => $admin, 'button' => 'no'));
-	$data = new Data();
+	$data = Setting::getDataObj();
 	$command = Yii::app()->db->createCommand('SELECT UNIX_TIMESTAMP(MIN(`create_time`)) FROM {{user}}');
 	$earliest = $command -> queryScalar();
 	
@@ -13,9 +13,11 @@
 	if ((!$_GET['from'])&&(($to - $from) > (24 * 3600 * 91)))  {
 		$from = $to - 24 * 3600 * 91;
 	}
-	
-	
-	
+	//Генерим календарик
+	$datepicker = $this -> renderPartial("//_datepicker",["get" => $_GET, "from" => $from, "to" => $to,"url" => Yii::app() -> baseUrl."/allstat/%startTime%/%endTime%"],true);
+	$from = $_GET["from"];
+	$to = $_GET["to"];
+
 	$sortable = array('fio','create_time');
 	$frompage = $_POST;
 	//$frompage["sortby"] = 'create_time';
@@ -50,71 +52,11 @@
 	//myFunc();
 	',CClientScript::POS_END);
 	CHtml::setTableSorting('admin_table',"{textExtraction:myFunc}");
-	//Сортировка по параметрам.
-	/*Yii::app()->getClientScript()->registerScript('SortingClick',"
-		$('#admin_table tr:first-child th').each(function () {
-			if ($(this).attr('sortby')) {
-				$(this).css('cursor','pointer');
-			}
-		});
-		$('#admin_table tr:first-child th').click(function (){
-			if ($(this).attr('sortby')) {
-				//alert($(this).attr('sortby'));
-				$('#controlForm input[name=\"sortby\"]').val($(this).attr('sortby'));
-				$('#controlForm').submit();
-			}
-		});
-		$('#pager .pageNum').click(function (){
-			$('#controlForm input[name=\"page\"]').val($(this).html());
-			$('#controlForm').submit();
-		});
-		$('#goTo input[type=\"button\"]').click(function() {
-			$('#controlForm input[name=\"page\"]').val($('#goTo input[type=\"text\"]').val());
-			$('#controlForm').submit();
-		});
-	",CClientScript::POS_READY);*/
-	
+
 	Yii::app()->getClientScript()->registerCssFile(Yii::app()->baseUrl.'/css/bundle-bundle_daterangepicker_defer.css');
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl.'/js/bundle-bundle_daterangepicker_defer.js');
-	
-	
-	//Календарик для выбора дат.
-	Yii::app()->getClientScript()->registerScript('DatePickerRange',"
-		$(function () {
-            $('#reportrange').daterangepicker({
-                format: 'DD.MM.YYYY',
-                startDate: '".date('d.m.Y', $from)."',
-                endDate: '".date('d.m.Y', $to)."',
-                maxDate: ".strtotime("+1 month").",
-                ranges: {
-                    'Сегодня': [moment(), moment()],
-                    'Вчера': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Последние 7 дней': [moment().subtract(6, 'days'), moment()],
-                    'Последние 30 дней': [moment().subtract(29, 'days'), moment()],
-                    'Текущий месяц': [moment().startOf('month'), moment().endOf('month')],
-                    'Предыдущий месяц': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
-                buttonClasses: ['btn', 'btn-sm'],
-                applyClass: 'btn-primary',
-                cancelClass: 'btn-default',
-                separator: ' по ',
-                locale: {
-                    applyLabel: 'Показать',
-                    cancelLabel: 'Отмена',
-                    fromLabel: 'С',
-                    toLabel: 'По',
-                    customRangeLabel: 'Выбрать даты',
-                    daysOfWeek: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
-                    monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июлю', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-                    firstDay: 1
-                }
-            }, function (start, end, label) {
-                //end.subtract(1, 'days');
-                window.location.href = '".Yii::app() -> baseUrl."/allstat/' + start.unix() + '/' + end.unix();
-            });
 
-        });
-	", CClientScript::POS_END);
+
 	
 	Yii::app()->getClientScript()->registerScript('deleteScript','$(".delete-doctor").click(function(){
 		if (!confirm("Вы уверены, что хотите удалить доктора "+$(this).attr("name")+"?")) {
@@ -125,7 +67,7 @@
 	});',CClientScript::POS_END); 	
 	
 	
-	$data = new Data();
+	//$data = Setting::getDataObj();
 	//print_r($get);
 
  $translate = array(
@@ -189,16 +131,8 @@
 
 		<div class="panel-body">
 			Показана статистика
-			<span id="reportrange" style="border-bottom: dotted 1px; font-size: 150%">
-				<i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
-				<span><small>с</small>
-				<?php echo strtr(date("d F Y",$from), $translate); ?>
-				<small>по</small>
-				<?php echo strtr(date("d F Y",$to),$translate); ?>
-				</span> <b class="caret"></b>
-			</span>
-
-
+			<?php //Календарик для выбора дат.
+			echo $datepicker; ?>
 			<br>
 		</div>
 	</div>
@@ -215,7 +149,12 @@
 
 	<?php
 		//print_r($frompage);
-		$data = new Data;
+		/**
+		 * //Это вариант загрузки из csv файла
+		 * $data = new Data;
+		 */
+		//Это вариант загрузки из GoogleDoc
+		//$data = new DataGD;
 		/*$user = User::model() -> findByAttributes(array('username' => 'doctor99'));
 		print_r($user -> calls);*/
 		$add = 604800;
@@ -233,11 +172,6 @@
 	</thead>
 	<?php
 		$num = 0;
-		//$sortby = 'create_time';
-		//$sortby = 'fio';
-		/*uasort($users, function ($u1, $u2) use ($sortby){
-			return (strcasecmp($u1 -> $sortby, $u2 -> $sortby));
-		});*/
 		$pageSize = 10;
 		$maxPage = ceil(count($users) / $pageSize);
 		if (($frompage["page"])&& ($frompage["page"] > 0)) {
@@ -249,14 +183,7 @@
 			$page = 1;
 		}
 		foreach($users as $key => $user){
-		//for ($num = ($page - 1) * $pageSize; $num <= $page * $pageSize; $num ++) {
 			$num ++;
-			/*if ($num <= ($page - 1) * $pageSize) {
-				continue;
-			}
-			if ($num > $page * $pageSize) {
-				break;
-			}//*/
 			$this -> renderPartial('//_showStat',array('user' => $user, 'data' => $data, 'from' => $from, 'to' => $to, 'num' => $num));
 		}
 	?>

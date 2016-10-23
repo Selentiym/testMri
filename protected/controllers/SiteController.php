@@ -298,7 +298,7 @@ class SiteController extends Controller
 			'deleteGroup'=>array(
 				'class'=>'application.controllers.site.ModelGroupAction',
 				'action' => function($id){
-					$call = BaseCall::model() -> findByPk($id);
+					$call = Setting::getCallModel() -> findByPk($id);
 					$call -> delete();
 				},
 				'args' => $_GET["group"],
@@ -496,9 +496,15 @@ class SiteController extends Controller
 		echo "debug!new";
 	}
 	public function actionCheck () {
-		if( $curl = curl_init() ) {
-			/*$from = $_GET["from"];
-			$to = $_GET["to"];*/
+		$api = new GoogleDocApiHelper();
+
+
+		var_dump(\Google\Spreadsheet\ListEntry::getEntryByUrl('https://spreadsheets.google.com/feeds/list/1CN1K4fG2nsrUlj5GOEfs4ncPU5gUT0pXNjuryQDJNFk/od6/private/full/cokwr'));
+		//https://spreadsheets.google.com/feeds/list/1CN1K4fG2nsrUlj5GOEfs4ncPU5gUT0pXNjuryQDJNFk/od6/private/full/cokwr
+		/*$api -> setWorkArea('check', date("F o",time()));
+		$data = $api->giveData();
+		var_dump($data -> getEntries());//*/
+		/*if( $curl = curl_init() ) {
 			$params = [
 					'dateFrom' => time() - 60*60*24*5,
 					'dateTo' => time(),
@@ -531,7 +537,7 @@ class SiteController extends Controller
 				}
 			}
 			curl_close($curl);
-		}
+		}*/
 	}
 	/*public function actionDownloadClinicsList(){
 		$reader = new CsvReader(Yii::app() -> basePath.'/../files/tests_clinics.csv');

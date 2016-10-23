@@ -141,4 +141,15 @@ class StatCall extends BaseCall {
         $q = mysqli_query(MysqlConnect::getConnection(), $sql);
         return externalStat::AverageByPeriodFromSQLRez($q, $periodMins);
     }
+    /**
+     * Checks the ClientPhone table and sets $this -> i if there is a record corresponding to user's mangoTalker.
+     */
+    public function lookForIAttribute(){
+        $mCall = mCall::model() -> findByAttributes(array('fromPhone' => $this -> mangoTalker));
+        if (is_a($mCall, 'mCall')) {
+            $this -> i = $mCall -> i;
+        } else {
+            unset($this -> i);
+        }
+    }
 }

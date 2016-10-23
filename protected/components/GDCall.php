@@ -25,8 +25,12 @@
 class GDCall extends Call{
     public $entry;
     public $year;
+    public $external_id;
     public function __construct(Google\Spreadsheet\ListEntry $entry, $year = null) {
         $data = $entry -> getValues();
+        $xml = $entry -> getXml();
+        //Потом по этой штуке мы сможем обращаться к строке гугл дока
+        $this -> external_id = $xml -> id;
         $this -> year = $year;
         $this -> entry = $entry;
         $this -> dateString = $data["дата"];
@@ -98,6 +102,8 @@ class GDCall extends Call{
     }
     public static function importFromGoogleDoc($timestamp, $dayCond = false){
         $api = new GoogleDocApiHelper();
+        //Чтобы потом не было проблем с ненайденными телефонами.
+        mCall::import($timestamp);
         if ($api -> success) {
             $date = getdate($timestamp);
             $year = $date["year"];

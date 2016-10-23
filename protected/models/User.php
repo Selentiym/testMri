@@ -107,7 +107,7 @@ class User extends UModel
 			'address_array' => array(self::MANY_MANY, 'UserAddress', '{{address_assignments}}(id_user, id_address)'),
 			'phones' => array(self::MANY_MANY, 'UserPhone', '{{phone_assignments}}(id_user, id_phone)'),
 			'mentor' => array(self::BELONGS_TO, 'UserMentor', 'id_mentor'),
-			'calls' => array(self::HAS_MANY,'BaseCall', 'id_user'),
+			'calls' => array(self::HAS_MANY,Setting::getCallClass(), 'id_user'),
 			'reviews' => array(self::HAS_MANY,'Review', 'id_user'),
 			'patients' => array(self::HAS_MANY,'Patient', 'id_user', 'order'=>'patients.create_time DESC'),
 			'ranges' => array(self::HAS_MANY,'Range', 'id_user'),

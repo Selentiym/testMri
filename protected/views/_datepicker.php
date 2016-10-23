@@ -3,7 +3,6 @@
 /**
  *
  */
-$data = new Data();
 $from = (int)$get['from'] ? (int)$get['from'] : time() - 86400*5;
 $to = (int)$get['to'] ? (int)$get['to'] : time();
 $range = array('from' => $from, 'to' => $to);

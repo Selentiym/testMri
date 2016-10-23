@@ -17,6 +17,8 @@
  */
 class mCall extends UModel
 {
+
+	private static $_lastCallTime;
 	/**
 	 * @return string the associated database table name
 	 */
@@ -118,6 +120,29 @@ class mCall extends UModel
 		return parent::model($className);
 	}
 
+	/**
+	 * Проверяет, нужна ли загрузка звонков и загружает, если нужна
+	 * @param $timestamp
+	 * @return bool
+	 */
+	public static function import($timestamp) {
+		$lc = (int)self::lastCallTime();
+		if (ceil($lc / (24*60*60)) != ceil($timestamp / (24*60*60))) {
+			return self::loadDataByApi(null, $timestamp);
+		}
+		return true;
+	}
+
+	/**
+	 * @return integer
+	 * @throws Exception
+	 */
+	public static function lastCallTime () {
+		if (!self::$_lastCallTime) {
+			self::$_lastCallTime = reset(mysqli_fetch_all(mysqli_query(MysqlConnect::getConnection(), 'SELECT UNIX_TIMESTAMP(MAX(`date`)) FROM `tbl_mango_call`')));
+		}
+		return self::$_lastCallTime;
+	}
 	/**
 	 *
 	 * @param int|bool $from unix timestamp. Will be replaced by the last loaded date if

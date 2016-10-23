@@ -1,3 +1,4 @@
+<?php $this -> renderPartial('//navBar'); ?>
 <?php $model = Setting::model() -> find(); ?>
 <?php $form=$this->beginWidget('CActiveForm', array(
         'id'=>'setting-form',
@@ -35,6 +36,10 @@
 <h4>Показывать ли статистику по клиникам при щелчке по картинке</h4>
 <div>
 <?php echo CHtml::activeRadioButtonList($model,'showClinicStat',array(1 => 'Показать', 0 => 'Не показать')); ?>
+</div>
+<h4>Источник данных</h4>
+<div>
+<?php echo CHtml::activeRadioButtonList($model,'shortTableName',array('stat_call' => 'Google Doc Api', "call" => 'CSV файл')); ?>
 </div>
 <div>
 <?php echo CHtml::submitButton('Сохранить'); ?>

@@ -36,8 +36,13 @@ Yii::app()->session->add('errorPage', $page);
 $criteria -> limit = $pageSize;
 $criteria -> offset = ($page - 1) * $pageSize;
 $criteria -> order = 'date DESC';
-$calls = BaseCall::model() -> findAll($criteria);
-$command = Yii::app()->db->createCommand('SELECT COUNT(`id`) FROM {{call}} WHERE `id_user` IS NULL AND `id_call_type` IN ('.implode(',',$ids).')');
+//obtain data to be showed
+$calls = Setting::getCallModel() -> findAll($criteria);
+/**
+ * set data source according to global settings
+ */
+$shortTableName = Setting::getShortTableName();
+$command = Yii::app()->db->createCommand('SELECT COUNT(`id`) FROM {{'.$shortTableName.'}} WHERE `id_user` IS NULL AND `id_call_type` IN ('.implode(',',$ids).')');
 $maximum = $command -> queryScalar();
 /*Yii::app() -> getClientScript() -> registerScript('clickScript',"
 	$('.assign').click(function(){
@@ -57,7 +62,7 @@ echo "</div>";
 if ($maximum > $pageSize) {
 	echo "<div class='pages'>";
 	
-	for ($i = 1; $i <= (float)$maximum/$pageSize + 1; $i++) {
+	for ($i = 1; $i <= ceil($maximum/$pageSize); $i++) {
 		$this -> renderPartial('//_page', array('num' => $i, 'url' => Yii::app() -> baseUrl . '/errors', 'active' => $page));
 	}
 	echo "</div>";
