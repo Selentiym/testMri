@@ -14,7 +14,7 @@
 			</tr>
 
 			<?php
-				$monthedCalls = Data::model() -> giveMonthedCalls($user);
+				$monthedCalls = Setting::getDataObj() -> giveMonthedCalls($user);
 				foreach($monthedCalls as $month => $calls_array) {
 					$this -> renderPartial('//_month_calls_shortcut', array(
 						'month' => $month,

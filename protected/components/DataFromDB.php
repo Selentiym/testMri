@@ -10,7 +10,7 @@ class DataFromDb extends DataFromCsvFile {
     public static $className;
     /**
      * @arg object user - the user to get data for.
-     * @return array - an array containing all BaseCall Objeccts.
+     * @return array - an array containing all call objects.
      */
     public function giveAllCalls($user) {
         return $user -> calls;
@@ -83,7 +83,7 @@ class DataFromDb extends DataFromCsvFile {
     }
     /**
      * @arg object user - the user to get data for.
-     * @return array - an array that is keyed by month numbers (1 - 12) and contains only specified user's BaseCall objects corresponding to the keying month.
+     * @return array - an array that is keyed by month numbers (1 - 12) and contains only specified user's call objects corresponding to the keying month.
      */
     public function giveMonthedCalls($user){
         $create_date_arr = getdate(strtotime($user -> create_time));
@@ -91,7 +91,7 @@ class DataFromDb extends DataFromCsvFile {
         $cur_date_arr = getdate();
         $endTime = time();
         //print_r($create_date_arr);
-        //$calls = Data::model() -> giveAllCalls($user);
+        //$calls = Setting::getDataObj() -> giveAllCalls($user);
         //echo count($calls);
         //Начинаем с того месяца, когда был создан пользователь.
         $month = $create_date_arr['mon'];
@@ -135,7 +135,7 @@ class DataFromDb extends DataFromCsvFile {
      * @return array - an array of call objects that correspond to the specified user and lie between the lower and higher boundary
      */
     public function giveCallsInRange($from, $to, $user){
-        $criteria = BaseCall::model() -> giveCriteriaForTimePeriod($from, $to);
+        $criteria = Setting::getCallModel() -> giveCriteriaForTimePeriod($from, $to);
         if ($user -> id_type == UserType::model() -> getNumber('doctor')) {
             $criteria -> compare('id_user', $user -> id);
         } else {
@@ -146,7 +146,7 @@ class DataFromDb extends DataFromCsvFile {
             $id_arr[] = $user -> id;
             $criteria -> addInCondition('id_user', array_merge(CHtml::giveAttributeArray($user -> children, 'id'),array($user -> id)));
         }
-        return BaseCall::model() -> findAll($criteria);
+        return Setting::getCallModel() -> findAll($criteria);
     }
     /**
      * Старая функция. Работает с объектами из csv файла

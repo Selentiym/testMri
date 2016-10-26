@@ -24,8 +24,52 @@
 		 */
 		protected $cachedSpread;
 		protected $cachedWork;
-		
-		public function __construct($config = false) {
+
+		private static $_instances = [];
+		private static $_lastClient;
+
+		/**
+		 * @return self
+		 */
+		public static function getLastInstance() {
+			$rez = self::$_instances[self::$_lastClient];
+			if (!$rez) {
+				$rez = self::getDefaultInstance();
+			}
+			return $rez;
+		}
+		/**
+		 * @return self
+		 */
+		public static function getInstance($config) {
+			if (!is_a(self::$_instances[$config['clientID']],__CLASS__)) {
+				self::$_instances[$config['clientID']] = new self($config);
+			}
+			self::$_lastClient = $config['clientID'];
+			return self::$_instances[$config['clientID']];
+		}
+		/**
+		 * @return self
+		 */
+		public static function getDefaultInstance() {
+			return self::getInstance([
+					'OAuth2URL' => [
+							'base' => 'https://accounts.google.com/o/oauth2',
+							'auth' => 'auth', // for Google authorization
+							'token' => 'token', // for OAuth2 token actions
+							'redirect' => 'http://localhost/show_code.php'
+					],
+
+					'clientID' => '79229050263-ectbv1uv1c0cresie5bnpsmbpdu6buho.apps.googleusercontent.com',
+					'clientSecret' => 'ds_7e-ZbzPeHgcr2pH7nOJNe',
+					'tokenDataFile' => Yii::getPathOfAlias('application.components.googleDoc').'/.tokendata'
+				//'tokenDataFile' => '.tokendata'
+			]);
+		}
+		/**
+		 * @return self
+		 */
+		private function __construct($config = false) {
 			//Это нужно мне. Там стоят мои данные, мне лень каждый раз их передавать в аргумент.
 			if (empty($config)) {
 				$config = [
@@ -150,12 +194,10 @@
 		}
 		/**
 		 * Searches the google doc files. Both: the original one and the copy.
+		 * @return \Google\Spreadsheet\ListEntry
 		 */
 		public function searchEverywhere($queryArray, $workSheet){
-			if ($entry = $this -> getLastEntry($queryArray,'СТАТИСТИКА СПб', $workSheet)) {
-				return $entry;
-			}
-			if ($entry = $this -> getLastEntry($queryArray,'Copy of СТАТИСТИКА СПб', $workSheet)) {
+			if ($entry = $this -> getLastEntry($queryArray,Setting::model() -> find() -> GDName, $workSheet)) {
 				return $entry;
 			}
 			return false;
@@ -230,6 +272,16 @@
 
 			// load file, return data as PHP array
 			return unserialize(file_get_contents($tokenDataFile));
+		}
+
+		/**
+		 * Объявлено как нестатичный метод только для индикации того, что уже должен
+		 * быть создан токен доступа.
+		 * @param $url
+		 * @return \Google\Spreadsheet\ListEntry
+		 */
+		public function getEntryByUrl($url) {
+			return \Google\Spreadsheet\ListEntry::getEntryByUrl($url);
 		}
 	}
 ?>

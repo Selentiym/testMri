@@ -98,4 +98,28 @@ class StatController extends Controller {
 		}
 	}
 
+	/**
+	 * Ежеденевная загрузка новых звонков. Смотрит два дня на всякий случай.
+	 */
+	public function actionLoadStatisticsDaily() {
+		ob_start();
+		GDCall::importFromGoogleDoc(time() - 24*68*60,true);
+		GDCall::importFromGoogleDoc(time(),true);
+		$out = ob_get_contents();
+		ob_end_clean();
+
+		self::log("LoadStatisticsDaily".PHP_EOL.$out);
+	}
+	public function actionRefreshData($from = null,$to = null) {
+		StatCall::refreshInPeriod($from, $to);
+		$this -> redirect(Yii::app() ->createUrl('stat/full', ["from" => $_GET["from"], "to" => $_GET["to"]]));
+	}
+	public static function log($str) {
+		$handler = fopen('stat.log','a+');
+		if ($handler) {
+			$str = "log on " . date("j.m.y H:i") . PHP_EOL . $str;
+			fwrite($handler, $str);
+		}
+		fclose($handler);
+	}
 }

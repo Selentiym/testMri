@@ -242,7 +242,7 @@ class SiteController extends Controller
 			),
 			'CallDelete' => array(
 				'class' => 'application.controllers.site.ModelDeleteAction',
-				'modelClass' => 'BaseCall',
+				'modelClass' => Setting::getCallClass(),
 				'returnUrl' => Yii::app() -> baseUrl.'/errors'
 			),
 			'MentorDelete' => array(
@@ -361,8 +361,8 @@ class SiteController extends Controller
 	//public function actionAssignCall($call_id,$user_id){
 	public function actionAssignCall(){
 		if (Yii::app() -> user -> checkAccess('admin')) {
-			$call = BaseCall::model() -> findByPk($_POST['id_call']);
-			//$call = BaseCall::model() -> findByPk($call_id);
+			$call = Setting::getCallModel() -> findByPk($_POST['id_call']);
+			//$call = Setting::getCallModel() -> findByPk($call_id);
 			if (($call)&&(!$call -> id_user)) {
 				if (!$_POST['id_user']) {
 					$_POST['id_user'] = array();
@@ -392,7 +392,7 @@ class SiteController extends Controller
 							//var_dump($owner);
 						} else {
 							//echo "owner_not_found";
-							new CustomFlash('error','BaseCall','UserNotFound','Присвоение пользователя не успешно',true);
+							new CustomFlash('error',Setting::getCallClass(),'UserNotFound','Присвоение пользователя не успешно',true);
 						}
 					}
 				}
@@ -400,16 +400,16 @@ class SiteController extends Controller
 					if ($call -> id_user) {
 						if ($call -> save()) {
 						//if (false) {
-							new CustomFlash('success','BaseCall','UserAssignSucc','Пользователь успешно присвоен',true);
+							new CustomFlash('success',Setting::getCallClass(),'UserAssignSucc','Пользователь успешно присвоен',true);
 						} else {
-							new CustomFlash('error','BaseCall','SaveError','Ошибка при сохранении результата',true);
+							new CustomFlash('error',Setting::getCallClass(),'SaveError','Ошибка при сохранении результата',true);
 						}
 					}
 				} else {
-					new CustomFlash('error','BaseCall','EmptyInput','Задайте параметры',true);
+					new CustomFlash('error',Setting::getCallClass(),'EmptyInput','Задайте параметры',true);
 				}
 			} else {
-				new CustomFlash('error','BaseCall','UserAssignErr','Неуспешное присвоение пользователя: не найдена запись или у нее уже выбран пользователь',true);
+				new CustomFlash('error',Setting::getCallClass(),'UserAssignErr','Неуспешное присвоение пользователя: не найдена запись или у нее уже выбран пользователь',true);
 			}
 			//echo "123";
 			//CustomFlash::ShowFlashes();
@@ -496,10 +496,17 @@ class SiteController extends Controller
 		echo "debug!new";
 	}
 	public function actionCheck () {
-		$api = new GoogleDocApiHelper();
+		//echo strtotime('yesterday');
+		StatCall::refreshInPeriod(strtotime('last month'), time() + 24*60*60*15);
 
+		/*$api = GoogleDocApiHelper::getLastInstance();
 
-		var_dump(\Google\Spreadsheet\ListEntry::getEntryByUrl('https://spreadsheets.google.com/feeds/list/1CN1K4fG2nsrUlj5GOEfs4ncPU5gUT0pXNjuryQDJNFk/od6/private/full/cokwr'));
+		$call = StatCall::model() -> findByPk(5222);
+		echo $call -> external_id;
+		$entry = $call -> findGDByLink();
+		var_dump($entry);//*/
+
+		//var_dump(\Google\Spreadsheet\ListEntry::getEntryByUrl('https://spreadsheets.google.com/feeds/list/1CN1K4fG2nsrUlj5GOEfs4ncPU5gUT0pXNjuryQDJNFk/od6/private/full/cokwr'));
 		//https://spreadsheets.google.com/feeds/list/1CN1K4fG2nsrUlj5GOEfs4ncPU5gUT0pXNjuryQDJNFk/od6/private/full/cokwr
 		/*$api -> setWorkArea('check', date("F o",time()));
 		$data = $api->giveData();

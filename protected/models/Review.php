@@ -125,7 +125,7 @@ class Review extends UModel
 		if (isset($get['id_call'])) {
 			$this -> id_call = $get['id_call'];
 			$this -> our = 1;
-			$this -> call  = BaseCall::model() -> findByPk($get['id_call']) ;
+			$this -> call  = Setting::getCallModel() -> findByPk($get['id_call']) ;
 			$call = $this -> call;
 			$this -> clinic = $call -> clinic;
 			$this -> research_type = $call -> research_type;

@@ -59,6 +59,7 @@ class BaseCall extends UModel
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, i, j, H, wishes, fio, birth, number, clinic, price, report, mangoTalker, comment, id_call_type, id_user, date', 'safe', 'on'=>'search'),
+			array('*', 'safe', 'on'=>'allSafe'),
 		);
 	}
 
@@ -221,13 +222,14 @@ class BaseCall extends UModel
 					$this -> prev_month = 1;
 					//echo "next!";
 				}
-			}
-			if (is_int($this -> date)) {
-				$this -> date = new CDbExpression('FROM_UNIXTIME('.$this -> date.')');
-			}
-			if (is_int($this -> calledDate)) {
-				$this -> calledDate = new CDbExpression('FROM_UNIXTIME('.$this -> calledDate.')');
 			}//*/
+		}
+
+		if ($this -> date > 1376046800) {
+			$this -> date = new CDbExpression('FROM_UNIXTIME('.$this -> date.')');
+		}
+		if ($this -> calledDate > 1376046800) {
+			$this -> calledDate = new CDbExpression('FROM_UNIXTIME('.$this -> calledDate.')');
 		}
 		return parent::beforeSave();
 	}

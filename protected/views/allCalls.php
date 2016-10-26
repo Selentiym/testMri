@@ -8,7 +8,7 @@
 	$range = ["from" => $_GET["from"], "to" => $_GET["to"]];
 ?>
 <?php 
-	$criteria = BaseCall::model() -> giveCriteriaForTimePeriod($range['from'], $range['to']);
+	$criteria = Setting::getCallModel() -> giveCriteriaForTimePeriod($range['from'], $range['to']);
 	$criteria -> order = 'date DESC';
 	//$criteria -> compare('id_call_type',CallType::model() -> getNumber('verifyed'));
 	if ($_GET["call_types"]) {
@@ -22,7 +22,7 @@
 			break;
 		}
 	}
-	$calls = BaseCall::model() -> findAll($criteria);
+	$calls = Setting::getCallModel() -> findAll($criteria);
 ?>
 <div class="panel panel-default">
 	<div class="panel-heading">Все звонки в указанный период</div>
@@ -35,7 +35,7 @@
 
 		<br>
 		Всего звонков: <?php echo count($calls); ?><br>
-		Всего записей: <?php $counted = Data::model() -> countArray($calls); echo $counted['verifyed'] + $counted['assigned'] + $counted["missed"]; ?><br>
+		Всего записей: <?php $counted = Setting::getDataObj() -> countArray($calls); echo $counted['verifyed'] + $counted['assigned'] + $counted["missed"]; ?><br>
 		Всего подтвержденных: <?php echo $counted['verifyed']; ?><br>
 		Всего не пришло: <?php echo $counted['missed']; ?>
 		<div id="all_call_types">

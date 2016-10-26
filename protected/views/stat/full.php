@@ -42,6 +42,7 @@ $datepicker = $this -> renderPartial("//_datepicker",["get" => $get, "from" => $
         "text" => "Этот месяц",
         "time" => time()
     ]);
+    echo "<br/>".CHtml::link("Обновить статусы за выбранный период", Yii::app() ->createUrl('stat/refreshData', ["from" => $_GET["from"], "to" => $_GET["to"]]));
     ?>
     <div><?php echo $datepicker; ?></div>
     <?

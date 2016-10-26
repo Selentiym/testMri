@@ -7,6 +7,10 @@
  */
 class StatCall extends BaseCall {
     /**
+     * Будет давать связь между данным объектом и записью GD
+     * @var string $external_id
+     */
+    /**
      * @return string the associated database table name
      */
     public function tableName()
@@ -18,7 +22,7 @@ class StatCall extends BaseCall {
      * Returns the static model of the specified AR class.
      * Please note that you should have this exact method in all your CActiveRecord descendants!
      * @param string $className active record class name.
-     * @return BaseCall the static model class
+     * @return StatCall the static model class
      */
     public static function model($className=__CLASS__)
     {
@@ -151,5 +155,149 @@ class StatCall extends BaseCall {
         } else {
             unset($this -> i);
         }
+    }
+
+    /**
+     * Возвращает количество полей, в которых отличие.
+     * @param \Google\Spreadsheet\ListEntry $entry
+     * @return int
+     */
+    public function compareWithGD(\Google\Spreadsheet\ListEntry $entry) {
+        $diffs = 0;
+        $data = array_map('trim',$entry -> getValues());
+
+        if ($data["дата"] != trim(date('j.n',strtotime($this -> calledDate)))) {
+            $diffs ++;
+        }
+        if ($data["фио"] != trim($this -> fio)) {
+            $diffs ++;
+        }
+        return $diffs;
+    }
+
+    /**
+     * @return \Google\Spreadsheet\ListEntry
+     */
+    public function findGdByFields() {
+        $entry = false;
+        $months = [1 => 'January',2 => 'February',3 => 'March',4 => 'April',5 => 'May',6 => 'June',7 => 'July',8 => 'August',9 => 'September',10 => 'October',11 => 'November',12 => 'December'];
+        $time = strtotime($this -> date);
+        //Массив даты, на которую запись.
+        $arr = getdate($time);
+        $month = $arr['mon'];
+        $year = $arr['year'];
+        //День, месяц поступления звонка.
+        $alterMon = date('n',strtotime($this -> calledDate));
+        //В нормальной ситауции месяц звонка меньше месяца записи, но если не так, то звонок был в предыдущем году.
+        if ($alterMon > $month) {
+            $year --;
+        }
+        //Получили название листа гугл дока.
+        $work = $months[$month].' '.$year;
+        $queryString = 'дата = "'.date('j.m', strtotime($this -> calledDate)).'"';
+        //Количество параметров, по которым происходит посик.
+        $params = 1;
+        if ($this -> research_type) {
+            //$queryString .= ' and типисследования="'.$this -> research_type.'"';
+            $params ++;
+        }
+        if ($this -> clinic) {
+            //$queryString .= ' and клиника = "'.$this -> clinic.'"';
+            $params ++;
+        }
+        if ($this -> fio) {
+            //$queryString .= ' and фио = "'.$this -> fio.'"';
+            $params ++;
+        }
+        if ($this -> birth) {
+            //$queryString .= ' and датарождения = "'.$this -> birth.'"';
+            $params ++;
+        }
+        $qArr = array('sq' => $queryString);
+        //Ищем запись.
+        return GoogleDocApiHelper::getLastInstance() -> searchEverywhere($qArr, $work);
+    }
+
+    /**
+     * Ищет соответсвующую запись в таблице.
+     * Помимо обычного поиска по номеру ищем еще и по полям.
+     * @return \Google\Spreadsheet\ListEntry
+     */
+    public function findGD() {
+        $rez = $this -> findGDByLink();
+        /**
+         * @type \Google\Spreadsheet\ListEntry $rez
+         */
+        if (is_a($rez,'\Google\Spreadsheet\ListEntry')) {
+            $lookMore = $this -> compareWithGD($rez) > 0;
+        } else {
+            $lookMore = true;
+        }
+        //Ищем через поля только если заметили какое-то несоответствие.
+        //Это менее точный поиск, но что уж поделать
+        if (!$lookMore) {
+            return $rez;
+        }
+        return $this -> findGdByFields();
+    }
+
+    /**
+     * Ищет запись гугл дока только по ссылке на ячейку.
+     * Может меняться иногда. Например, если была вставлена дополнительная строка.
+     * @return \Google\Spreadsheet\ListEntry
+     */
+    public function findGDByLink(){
+        if ($this -> external_id) {
+            $a = $this -> external_id;
+            return GoogleDocApiHelper::getLastInstance()->getEntryByUrl($this->external_id);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Goes to google doc file and refreshes data
+     * @return bool - whether the refresh took place
+     */
+    public function refreshData() {
+        $entry = $this -> findGD();
+        if (is_a($entry, '\Google\Spreadsheet\ListEntry')) {
+            $tempCall = new GDCall($entry);
+            $tempCall -> setRecordAttributes($this);
+            return $this -> save();
+        }
+        return false;
+    }
+
+    /**
+     * @param integer $from
+     * @param integer $to
+     * @return integer
+     */
+    public static function refreshInPeriod($from = null, $to = null) {
+        $toRefresh = StatCall::model() -> findAll(StatCall::giveCriteriaForTimePeriod($from, $to));
+        /**
+         * @type StatCall[] $toRefresh
+         */
+        $changed = 0;
+        $changedStatuses = [];
+        //Задаем массив типов, чтобы подсчитать изменения.
+        $types = CallType::model() -> findAll();
+        foreach($types as $t) {
+            $temp = array('count' => 0, 'name' => $t -> name);
+            $changedStatuses[$t -> id] = $temp;
+        }
+        foreach ($toRefresh as $record) {
+            $record -> setScenario("allSafe");
+            $attributesOld = $record -> attributes;
+            $record -> refreshData();
+            $changed += (int)($attributesOld != $record -> attributes);
+            if ($attributesOld["id_call_type"] != $record -> id_call_type) {
+                //Наращиваем счетчик увеличенных статусов.
+                $changedStatuses[$record -> id_call_type]['count'] ++;
+            }
+        }
+        //var_dump($changedStatuses);
+        return $changed;
     }
 }

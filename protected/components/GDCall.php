@@ -101,16 +101,16 @@ class GDCall extends Call{
         }
     }
     public static function importFromGoogleDoc($timestamp, $dayCond = false){
-        $api = new GoogleDocApiHelper();
+        $api = GoogleDocApiHelper::getLastInstance();
         //Чтобы потом не было проблем с ненайденными телефонами.
         mCall::import($timestamp);
         if ($api -> success) {
             $date = getdate($timestamp);
             $year = $date["year"];
-            $api -> setWorkArea('СТАТИСТИКА СПб', date("F o",$timestamp));
+            $api -> setWorkArea(Setting::model() -> find() -> GDName, date("F o",$timestamp));
             $cond = [];
             if ($dayCond) {
-                $cond = array('sq' => 'дата = '.date("j.m",$timestamp));
+                $cond = ['sq' => 'дата = "'.date("j.m",$timestamp).'"' ];
             }
             $data = $api->giveData($cond);
             $i = 0;
@@ -146,13 +146,33 @@ class GDCall extends Call{
 
             }
         } else {
-            echo "api did not work!";
+            echo "api did not work!".PHP_EOL;
         }
-        echo "Сохранено ".$saved."<br/>";
-        echo "Не удалось сохранить ".$notSaved."<br/>";
-        echo "Найденов БД ".$found."<br/>";
-        echo "Не определися номер ".$noI."<br/>";
-        echo "Всего ".$i."<br/>";
+        echo "Сохранено ".$saved."<br/>".PHP_EOL;
+        echo "Не удалось сохранить ".$notSaved."<br/>".PHP_EOL;
+        echo "Найденов БД ".$found."<br/>".PHP_EOL;
+        echo "Не определися номер ".$noI."<br/>".PHP_EOL;
+        echo "Всего ".$i."<br/>".PHP_EOL;
+    }
+
+    /**
+     * @param StatCall $record
+     */
+    public function setRecordAttributes($record) {
+        parent::setRecordAttributes($record);
+        $record -> external_id = $this -> external_id;
+    }
+
+    /**
+     * Checks the ClientPhone table and sets $this -> i if there is a record corresponding to user's mangoTalker.
+     */
+    public function lookForIAttribute(){
+        $mCall = mCall::model() -> findByAttributes(array('fromPhone' => $this -> mangoTalker));
+        if (is_a($mCall, 'mCall')) {
+            $this -> i = $mCall -> i;
+        } else {
+            unset($this -> i);
+        }
     }
 }
 ?>

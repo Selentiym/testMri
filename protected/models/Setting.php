@@ -7,6 +7,7 @@
  * @property string $comment_stat
  * @property integer $year
  * @property boolean $allowMDCreateAddresses - whether to allow main doctors creae addresses while creating users
+ * @property string $GDName
  */
 class Setting extends UModel
 {
@@ -132,6 +133,10 @@ class Setting extends UModel
 				break;
 		}
 	}
+
+	/**
+	 * @return DataGD|Data
+	 */
 	public static function getDataObj() {
 		switch (self::getShortTableName()) {
 			case "stat_call":

@@ -190,7 +190,7 @@
 			return CallType::model() -> findByAttributes(array('string' => $this -> Classify())) -> id;
 		}
 		/**
-		 * @return object[BaseCall] | false - the model of the call corresonding to this line in the csv file. 
+		 * @return BaseCall|false - the model of the call corresonding to this line in the csv file.
 		 * If the DB record is not found false is returned
 		 */
 		public function record(){
@@ -420,15 +420,20 @@
 			$record -> number = $this -> number;
 			$record -> clinic = $this -> clinic;
 			$record -> price = $this -> price;
-			$record -> price = $this -> price;
 			$record -> report = $this -> report;
 			$record -> mangoTalker = $this -> mangoTalker;
 			$record -> comment = $this -> comment;
+			$d = $this -> giveAssignDatePREG();
 			$record -> date = $this -> giveAssignDatePREG();
 			$time = $this -> giveCallTime();
 			$record -> calledDate = $this -> giveCallTime();
 
-			$owner = $this -> giveOwner();
+			//Чтобы при обновлении статуса у нас вдруг не слетела привязка.
+			//А вот если привязки и не было, то попробовать привязать стоит.
+			$owner = false;
+			if (!$record -> id_user) {
+				$owner = $this->giveOwner();
+			}
 			
 			$record -> id_error = $this -> id_error;
 			

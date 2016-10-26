@@ -11,7 +11,7 @@
 		$calls = $user -> calls;
 	}*/
 	if (($calls)&&(count($calls > 0))) :
-	$counted = Data::model() -> countArray($calls);
+	$counted = Setting::getDataObj() -> countArray($calls);
 ?>
 
 <tr class="<?php echo UserType::model() -> getRole($user -> id_type); ?>">

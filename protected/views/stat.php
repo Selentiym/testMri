@@ -103,7 +103,7 @@
     );
 	
 ?>
-<?php $calls = Data::model() -> giveCallsInRange($range['from'],$range['to'], $user); ?>
+<?php $calls = Setting::getDataObj() -> giveCallsInRange($range['from'],$range['to'], $user); ?>
 <div class="panel panel-default">
 	<div class="panel-heading">Статистика по записям</div>
 
@@ -121,7 +121,7 @@
 
 		<br>
 		Всего звонков: <?php echo count($calls); ?><br>
-		Всего записей: <?php $counted = Data::model() -> countArray($calls); echo $counted['verifyed'] + $counted['assigned']; ?>
+		Всего записей: <?php $counted = Setting::getDataObj() -> countArray($calls); echo $counted['verifyed'] + $counted['assigned']; ?>
 	</div>
 </div>
 <table class="table table-stripped" style="margin-top: 10px">
