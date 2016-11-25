@@ -19,7 +19,7 @@ class Setting extends UModel
 	{
 		return '{{settings}}';
 	}
-	public function customFind(){
+	public function customFind($arg = ''){
 		return self::model() -> find();
 	}
 	//public function 
