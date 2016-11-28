@@ -152,7 +152,7 @@ class mCall extends UModel
 	public static function loadDataByApi($from = false, $to = false){
 		if( $curl = curl_init() ) {
 			if (!$from) {
-				$from = reset(mysqli_fetch_all(mysqli_query(MysqlConnect::getConnection(), 'SELECT UNIX_TIMESTAMP(MAX(`date`)) FROM `tbl_mango_call`')));
+				$from = current(current(mysqli_fetch_all(mysqli_query(MysqlConnect::getConnection(), 'SELECT UNIX_TIMESTAMP(MAX(`date`)) FROM `tbl_mango_call`'))));
 			}
 			$params = array_filter([
 					'dateFrom' => $from,
