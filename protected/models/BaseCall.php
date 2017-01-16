@@ -162,27 +162,16 @@ class BaseCall extends UModel
 	{
 		return parent::model($className);
 	}
-	/**
-	 * @return integer - unix time of the moment to which the patient is assigned
-	 */
 	public function giveAssignDate(){
+		$del = "([^\d]+)";
+		$dig = "(\d{1,2})";
+		//$pattern = '/' . $dig . $del . $dig . $del . $dig . $del . $dig . '/';
+		preg_match('/' . $dig . $del . $dig . $del . $dig . $del . $dig . '/', $this -> report, $matches);
+
+		$date_arr[0] = $matches[5];
+		$date_arr[1] = $matches[7];
+
 		//18,40 2/11
-		$arr = array_values(array_filter(array_map('trim',explode(' ', $this -> report))));
-		//print_r($arr);
-		$date = $arr[1];
-		//echo $date.' - date';
-		$date_arr = array_map('trim',explode('/', $date));
-		if (count($date_arr) < 2) {
-			$date_arr = array_map('trim',explode('.', $date));
-		}
-		if (count($date_arr) < 2) {
-			$date_arr = array_map('trim',explode(',', $date));
-		}
-		if (count($date_arr) < 2) {
-			$date_arr = array_map('trim',explode('\\', $date));
-		}if (count($date_arr) < 2) {
-			$date_arr = array_map('trim',explode('\\', $date));
-		}
 		if ((count($date_arr) < 2)||(!(int)$date_arr[0])||(!(int)$date_arr[1])) {
 			new CustomFlash('error','BaseCall','FormatMistake'.$this->fio,'Не удалось определить дату, на которую записан клиент '.$this -> fio . '. Строка отчета: '.$this -> report.'. Один из корректных форматов отчета при записи это "<час>,<время> <день>,<месяц>". Важно, чтобы дату от времени отделял пробел!',true);
 			//var_dump($this -> report);
@@ -195,7 +184,6 @@ class BaseCall extends UModel
 		//свойство date уж должно быть задано!
 		$call_date = $this -> giveDate();
 		//print_r( $this -> giveDate());
-		//echo "123";
 		//Сначала считаем, что запись была сделана на тот же год.
 		$year = $call_date['year'];
 		//Но если номер месяца записи меньше номера месяца звонка, то считаем, что запись произошла на следующий год.
@@ -203,10 +191,8 @@ class BaseCall extends UModel
 			$year ++;
 		}
 		//echo $month.' - '.$day.' - '.$year.'<br/>';
-		//echo $this -> report;
-		//var_dump($day);
-		return mktime(12,0,0,$month,$day,$year);
-	}
+		return mktime($matches[1],$matches[3],0,$month,$day,$year);
+	}//*/
 	/**
 	 * Sets propper values for date
 	 */
