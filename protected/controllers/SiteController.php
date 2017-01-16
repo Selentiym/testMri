@@ -112,6 +112,11 @@ class SiteController extends Controller
 				'modelClass' => 'User',
 				'view' => '//allCalls'
 			),
+			'factorStat' => array(
+				'class' => 'application.controllers.site.ModelViewAction',
+				'modelClass' => 'User',
+				'view' => '//stat/factorStat'
+			),
 			'showReviews' => array(
 				'class' => 'application.controllers.site.ModelViewAction',
 				'modelClass' => 'User',
@@ -495,9 +500,33 @@ class SiteController extends Controller
 	public function actionCheckDebug(){
 		echo "debug!new";
 	}
+	public function actionLoadDataByTime(){
+		$t = microtime(true);
+		$factory  = Yii::app() -> getModule('googleDoc') -> getFactory();
+		/**
+		 * @type aGDCallFactory $factory
+		 */
+		if ($_GET["time"] < 10000) {
+			$time = time();
+		} else {
+			$time = $_GET["time"];
+		}
+		echo "Time, for which the download took place $time <br/>";
+		$entries = $factory -> scanGoogle([],$time);
+		foreach ($entries as $e) {
+			$call = $factory -> buildByEntry($e);
+			if (!$call -> save()) {
+				//$err = $call -> getErrors();
+			}
+		}
+		echo "time:".(microtime(true) - $t)."<br/>";
+	}
 	public function actionCheck () {
+		$this -> render('//stat/factorStat');
 		//echo strtotime('yesterday');
-		StatCall::refreshInPeriod(strtotime('last month'), time() + 24*60*60*15);
+		//StatCall::refreshInPeriod(strtotime('last month'), time() + 24*60*60*15);
+
+
 
 		/*$api = GoogleDocApiHelper::getLastInstance();
 

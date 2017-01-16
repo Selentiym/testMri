@@ -18,6 +18,12 @@ return array(
 		'application.models.*',
 		'application.components.*',
 		'application.components.googleDoc.*',
+		'application.components.traits.*',
+		'application.components.stat.*',
+		'application.components.stat.factors.*',
+		'application.components.stat.factors.callFactors.*',
+		'application.components.stat.models.*',
+		'application.components.stat.customize.*',
 		//'webroot.vendor.autoload'
 	),
 
@@ -30,7 +36,15 @@ return array(
 			// If removed, Gii defaults to localhost only. Edit carefully to taste.
 			'ipFilters'=>array('127.0.0.1','::1'),
 		),
-		
+		'googleDoc' => [
+			'class' => 'application.modules.googleDoc.googleDocModule',
+			'factory' => function(){
+				return new GDCallFactorableFactory();
+			},
+			'config' => require_once(__DIR__.'/googleDoc.config.pss.php'),
+			//'spreadsheet' => 'Copy of СТАТИСТИКА СПб'
+			'spreadsheet' => 'СТАТИСТИКА СПб'
+		]
 	),
 
 	// application components
@@ -84,6 +98,9 @@ return array(
 				
 				'allCalls/<from:\d*>/<to:\d*>' => 'site/allCalls',
 				'allCalls/<from:\d*>' => 'site/allCalls',
+
+				'factorStat/<from:\d*>/<to:\d*>' => 'site/factorStat',
+				'factorStat/<from:\d*>' => 'site/factorStat',
 				
 				'errors/p<page:\d+>' => 'site/errors',
 				
@@ -160,14 +177,7 @@ return array(
             'password' => '',
             'charset' => 'utf8',
         ),*/
-		'db'=>array(
-            'connectionString' => 'mysql:host=localhost;dbname=cq97848_calls',
-            'tablePrefix' => 'tbl_',
-            'emulatePrepare' => true,
-            'username' => 'cq97848_calls',
-            'password' => 'kicker',
-            'charset' => 'utf8',
-        ),
+		'db'=>require_once(__DIR__ . '/database.pss.php'),
 		
 		// uncomment the following to use a MySQL database
 		/*
