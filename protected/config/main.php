@@ -44,7 +44,8 @@ return array(
 			'config' => require_once(__DIR__.'/googleDoc.config.pss.php'),
 			//'spreadsheet' => 'Copy of СТАТИСТИКА СПб'
 			'spreadsheet' => 'СТАТИСТИКА СПб'
-		]
+		],
+		'landingData'
 	),
 
 	// application components
@@ -169,26 +170,9 @@ return array(
 		'db'=>array(
 			'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/testdrive.db',
 		),*/
-		/*'db'=>array(
-            'connectionString' => 'mysql:host=localhost;dbname=calls',
-            'tablePrefix' => 'tbl_',
-            'emulatePrepare' => true,
-            'username' => 'root',
-            'password' => '',
-            'charset' => 'utf8',
-        ),*/
 		'db'=>require_once(__DIR__ . '/database.pss.php'),
-		
-		// uncomment the following to use a MySQL database
-		/*
-		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=testdrive',
-			'emulatePrepare' => true,
-			'username' => 'root',
-			'password' => '',
-			'charset' => 'utf8',
-		),
-		*/
+		'mrktClinicsDB'=>require_once(__DIR__ . '/mrkt.database.pss.php'),
+
 		/* Not default, added by me. To have a simple access way. */
 		'authManager'=>array(
             'class'=>'CDbAuthManager',

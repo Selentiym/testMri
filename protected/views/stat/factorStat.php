@@ -1,20 +1,36 @@
 <?php
 /**
+ * @type Controller $this
+ */
+$datepicker = $this -> renderPartial("//_datepicker",["get" => $get, "from" => $from, "to" => $to,"url" => Yii::app() -> baseUrl."/factorStat/%startTime%/%endTime%"],true);
+$range = ["from" => $_GET["from"], "to" => $_GET["to"]];
+
+
+/**
  * Created by PhpStorm.
  * User: user
  * Date: 14.01.2017
  * Time: 15:34
  */
+$mod = Yii::app() -> getModule('landingData');
+/**
+ * @type landingDataModule $mod
+ */
+$calls = $mod -> getEnterData('mrktClinics', landingDataModule::giveCriteriaForTimePeriod($range['from'], $range['to']));
+//$calls =
+$factorA = new NumberFactor();
+//$factorA = new TimeFactor(60*60, 'H:i');
+
+$v = [new CountFactor()];
+GraphicsByFactors::GoogleDocGraph($factorA,$calls, $v);
+
+return;
 
 //var_dump($calls);
 //return;
 $mod = Yii::app() -> getModule('googleDoc');
 $callModel = GDCallFactorable::model();
-	/**
-     * @type Controller $this
-     */
-	$datepicker = $this -> renderPartial("//_datepicker",["get" => $get, "from" => $from, "to" => $to,"url" => Yii::app() -> baseUrl."/factorStat/%startTime%/%endTime%"],true);
-	$range = ["from" => $_GET["from"], "to" => $_GET["to"]];
+
 $criteria = StatCall::model() -> giveCriteriaForTimePeriod($range['from'], $range['to']);
 $criteria -> order = 'date DESC';
 //$criteria -> compare('id_call_type',CallType::model() -> getNumber('verifyed'));
