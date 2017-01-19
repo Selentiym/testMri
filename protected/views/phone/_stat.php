@@ -11,6 +11,9 @@
 $allCalls = $model -> countCalls($range,[],$attr);
 $assignedCalls = $model -> countCalls($range,$types,$attr);
 $verifiedCalls = $model -> countCalls($range,[CallType::model()->getNumber("verifyed")],$attr);
+$_GET["sum_assigned"] += $assignedCalls;
+$_GET["sum_ver"] += $verifiedCalls;
+$_GET["sum"] += $allCalls;
 if ($allCalls == 0) {
     $percent = 0;
     $percentVer = 0;
