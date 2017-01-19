@@ -54,7 +54,7 @@ $datepicker = $this -> renderPartial("//_datepicker",["get" => $get, "from" => $
     $arr[] = CallType::model()->getNumber("cancelled");
 
     echo "<table class='table table-bordered'>";
-    echo "<tr><td>Линия</td><td>Звонков</td><td>Записей</td></tr>";
+    echo "<tr><td>Линия</td><td>Звонков</td><td>Записей</td><td>Подтвержденных</td></tr>";
     foreach (UserPhone::model() -> findAll() as $p) {
         $this -> renderPartial("//phone/_stat", ['range' => $range, "types" => $arr, "attr" => $attr,"model" => $p]);
     }

@@ -57,6 +57,10 @@ class StatCall extends BaseCall {
             $out = curl_exec($curl);
             $oCalls = json_decode($out);
 
+            if (empty($oCalls)) {
+                $oCalls = [];
+            }
+
             if ($lineObj) {
                 $crit = StatCall::giveCriteriaForTimePeriod($range["from"], $range["to"],$attr);
                 $crit->compare("i", $lineObj->i);

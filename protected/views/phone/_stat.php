@@ -10,10 +10,13 @@
  */
 $allCalls = $model -> countCalls($range,[],$attr);
 $assignedCalls = $model -> countCalls($range,$types,$attr);
+$verifiedCalls = $model -> countCalls($range,[CallType::model()->getNumber("verifyed")],$attr);
 if ($allCalls == 0) {
     $percent = 0;
+    $percentVer = 0;
 } else {
     $percent = round($assignedCalls/$allCalls*1000)/10;
+    $percentVer = round($verifiedCalls/$allCalls*1000)/10;
 }
 ?>
 <tr>
@@ -26,5 +29,7 @@ if ($allCalls == 0) {
             ]
         )); ?>
     </td>
-    <td><?php echo $allCalls; ?></td><td><?php echo $assignedCalls." (".$percent."%)"; ?></td>
+    <td><?php echo $allCalls; ?></td>
+    <td><?php echo $assignedCalls." (".$percent."%)"; ?></td>
+    <td><?php echo $verifiedCalls." (".$percentVer."%)"; ?></td>
 </tr>
