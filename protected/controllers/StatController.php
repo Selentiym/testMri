@@ -122,4 +122,13 @@ class StatController extends Controller {
 		}
 		fclose($handler);
 	}
+	public function actionCheck(){
+		$int = DateInterval::createFromDateString("- 1 month");
+		$time = new DateTime();
+		$time -> add($int);
+		$timeEnd = $time -> getTimestamp();
+		$timeStart = $time -> add($int) -> getTimestamp();
+		//echo $time;
+		mCall::loadDataByApi($timeStart, $timeEnd);
+	}
 }

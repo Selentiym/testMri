@@ -36,7 +36,7 @@ class mCall extends UModel
 		// will receive user inputs.
 		return array(
 			array('date, line, fromPhone', 'required'),
-			array('direction, status, duration, i', 'numerical', 'integerOnly'=>true),
+			array('duration, i', 'numerical', 'integerOnly'=>true),
 			array('line, fromPhone', 'length', 'max'=>128),
 			array('toPhone', 'length', 'max'=>512),
 			// The following rule is used by search().

@@ -86,7 +86,7 @@ return array(
 				
 				'print' => 'site/printDirections',
 				'print/<arg:\w+>' => 'site/printDirections',
-
+				'stat/check' => 'stat/check',
 				'stat/<action:(full|showDiff|loadStatistics|refreshData|LoadStatisticsDaily|mangoCalls|loadMango)>/<from:\d*>/<to:\d*>'=>'stat/<action>',
 				'stat/<action:(full|showDiff|loadStatistics|refreshData|LoadStatisticsDaily|mangoCalls|loadMango)>/<to:\d*>'=>'stat/<action>',
 				'stat/<action:(full|showDiff|loadStatistics|refreshData|LoadStatisticsDaily|mangoCalls|loadMango)>'=>'stat/<action>',
@@ -100,8 +100,8 @@ return array(
 				'allCalls/<from:\d*>/<to:\d*>' => 'site/allCalls',
 				'allCalls/<from:\d*>' => 'site/allCalls',
 
-				'factorStat/<from:\d*>/<to:\d*>' => 'site/factorStat',
-				'factorStat/<from:\d*>' => 'site/factorStat',
+				'<action:(lineStatByFactors|factorStat)>/<from:\d*>/<to:\d*>' => 'site/<action>',
+				'<action:(lineStatByFactors|factorStat)>/<from:\d*>' => 'site/<action>',
 				
 				'errors/p<page:\d+>' => 'site/errors',
 				

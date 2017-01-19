@@ -117,6 +117,11 @@ class SiteController extends Controller
 				'modelClass' => 'User',
 				'view' => '//stat/factorStat'
 			),
+			'lineStatByFactors' => array(
+				'class' => 'application.controllers.site.ModelViewAction',
+				'modelClass' => 'User',
+				'view' => '//stat/lineStatByFactors'
+			),
 			'showReviews' => array(
 				'class' => 'application.controllers.site.ModelViewAction',
 				'modelClass' => 'User',
