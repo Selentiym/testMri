@@ -171,6 +171,12 @@ class GDCall extends Call{
      * Checks the ClientPhone table and sets $this -> i if there is a record corresponding to user's mangoTalker.
      */
     public function lookForIAttribute(){
+        $len = mb_strlen($this -> mangoTalker, "utf-8");
+        if ($len == 7 ) {
+            $this -> mangoTalker = '7812'.$this -> mangoTalker;
+        } elseif ($len == 10) {
+            $this -> mangoTalker = '7'.$this -> mangoTalker;
+        }
         $mCall = mCall::model() -> findByAttributes(array('fromPhone' => $this -> mangoTalker));
         if (is_a($mCall, 'mCall')) {
             $this -> i = $mCall -> i;
