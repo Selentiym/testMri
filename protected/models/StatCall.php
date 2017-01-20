@@ -51,6 +51,15 @@ class StatCall extends BaseCall {
                 "key" => OmriPss::pss(),
                 "type" => $tr[$attr]
             ];
+            $params = [
+                "dateFrom" => $range["from"],
+                "dateTo" => $range["to"],
+                "key" => OmriPss::pss(),
+                "city" => 1,
+                "line" => $line,
+                //"type" => $tr[$attr]
+            ];
+            //$url = "http://web-utils.ru/api/export?".http_build_query($params);
             $url = 'http://o.mrimaster.ru/api/contacts?'.http_build_query($params);
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
@@ -71,14 +80,14 @@ class StatCall extends BaseCall {
                     foreach ($oCalls as $oKey => $oCall) {
                         //Поочередно ищем каждый звонок из omri на pmri
                         foreach ($pCalls as $pKey => $pCall) {
-                            if (mb_strtolower(trim($oCall->clientName), "UTF-8") != mb_strtolower(trim($pCall->fio), "UTF-8")) {
+                            if (mb_strtolower(trim($oCall->name), "UTF-8") != mb_strtolower(trim($pCall->fio), "UTF-8")) {
                                 continue;
                             }
                             $oT = strtotime($pCall->$attr);
                             if ($attr == "date") {
-                                $pT = strtotime($oCall->appointmentTime);
+                                $pT = strtotime($oCall->app_date);
                             } else {
-                                $pT = strtotime($oCall->callDate);
+                                $pT = strtotime($oCall->call_date);
                             }
                             if (abs($oT - $pT) > 3600 * 12) {
                                 continue;
