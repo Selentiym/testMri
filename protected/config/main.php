@@ -89,7 +89,7 @@ return array(
 				'stat/check' => 'stat/check',
 				'stat/<action:(full|showDiff|loadStatistics|refreshData|LoadStatisticsDaily|mangoCalls|loadMango)>/<from:\d*>/<to:\d*>'=>'stat/<action>',
 				'stat/<action:(full|showDiff|loadStatistics|refreshData|LoadStatisticsDaily|mangoCalls|loadMango)>/<to:\d*>'=>'stat/<action>',
-				'stat/<action:(full|showDiff|loadStatistics|refreshData|LoadStatisticsDaily|mangoCalls|loadMango)>'=>'stat/<action>',
+				'stat/<action:(full|showDiff|loadStatistics|refreshData|LoadStatisticsDaily|mangoCalls|loadMango|FormAssign)>'=>'stat/<action>',
 
 				'stat/<from:\d*>' => 'site/stat',
 				'stat/<arg:\w+>' => 'site/stat',

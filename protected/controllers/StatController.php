@@ -139,6 +139,28 @@ class StatController extends Controller {
 		$s -> lineNumber = $_GET["pid"];
 		$s -> save();
 		$s -> refresh();
-		//$num = ;
+		$num = preg_replace('/[^\d]/ui','',$s -> number);
+		$len = mb_strlen($num,"utf-8");
+		if ($len == 7) {
+
+		} elseif ($len == 11) {
+			$num = preg_replace('/^8/ui','7', $num);
+		}
+		$s -> numberFormatted = $num;
+		$phone = UserPhone::model() -> findByAttributes(['number' => $s -> lineNumber.'.online']);
+		if ($phone instanceof UserPhone) {
+			$s->i = $phone->i;
+			$client = ClientPhone::model() -> findByAttributes(['mangoTalker' => $s -> numberFormatted]);
+			if (!($client instanceof ClientPhone)) {
+				$client = new ClientPhone();
+				$client -> id_phone = $phone -> id;
+				$client -> mangoTalker = $s -> numberFormatted;
+				$client -> save();
+			}
+			//$client = new ClientPhone();
+		}
+		$s -> i = $phone -> i;
+		$s -> save();
+		//$s ->
 	}
 }
