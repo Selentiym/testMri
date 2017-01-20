@@ -131,4 +131,14 @@ class StatController extends Controller {
 		//echo $time;
 		mCall::loadDataByApi($timeStart, $timeEnd);
 	}
+	public function actionFormAssign(){
+		//
+		$s = new FormSubmit();
+		$s -> fio = $_GET["name"];
+		$s -> number = $_GET["phone"];
+		$s -> lineNumber = $_GET["pid"];
+		$s -> save();
+		$s -> refresh();
+		//$num = ;
+	}
 }

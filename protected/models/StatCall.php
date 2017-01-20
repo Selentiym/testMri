@@ -43,7 +43,7 @@ class StatCall extends BaseCall {
             /*$line = "78124071126";
             $line = "78124071024";*/
             $line = $lineObj -> number;
-            $tr = ["calledDate" => "call","date"=>"app"];
+            $tr = ["calledDate" => "call_date","date"=>"app_date"];
             $params = [
                 "dateFrom" => $range["from"],
                 "dateTo" => $range["to"],
