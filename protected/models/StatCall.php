@@ -43,21 +43,14 @@ class StatCall extends BaseCall {
             /*$line = "78124071126";
             $line = "78124071024";*/
             $line = $lineObj -> number;
-            $tr = ["calledDate" => "call","date"=>"assign"];
-            $params = [
-                "dateFrom" => $range["from"],
-                "dateTo" => $range["to"],
-                "line" => $line,
-                "key" => OmriPss::pss(),
-                "type" => $tr[$attr]
-            ];
+            $tr = ["calledDate" => "call","date"=>"app"];
             $params = [
                 "dateFrom" => $range["from"],
                 "dateTo" => $range["to"],
                 "key" => OmriPss::pss(),
                 "city" => 1,
                 "line" => $line,
-                //"type" => $tr[$attr]
+                "filterBy" => $tr[$attr]
             ];
             //$url = "http://web-utils.ru/api/export?".http_build_query($params);
             $url = 'http://o.mrimaster.ru/api/contacts?'.http_build_query($params);

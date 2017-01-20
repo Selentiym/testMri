@@ -9,12 +9,14 @@
 if (Yii::app() -> user -> checkAccess("admin")):
     $this -> renderPartial('//navBar',array('button' => 'no'));
 
-    Yii::app()->user->setState("dateAttr", $_GET["attr"], "calledDate");
-    $attr = Yii::app() -> user -> getState("dateAttr","calledDate");
+    $attr = $_GET["attr"];
     if (!in_array($attr,["calledDate","date"])) {
-        $attr = "calledDate";
+        $attr = Yii::app() -> user -> getState("dateAttr","calledDate");
     }
-
+    if (!in_array($attr,["calledDate","date"])) {
+        $attr = "date";
+    }
+    Yii::app()->user->setState("dateAttr", $attr, "calledDate");
     /**
      * @type Controller $this
      */
@@ -25,8 +27,13 @@ if (Yii::app() -> user -> checkAccess("admin")):
         StatCall::compareStats($oCalls, $pCalls, $range, $lineObj, $oCallsDel, $pCallsDel, $attr);
 
     ?>
+        <style>
+            tr.call {
+                height:75px;
+            }
+        </style>
         <h1>Сравнение по линии <?php echo $lineObj -> number; ?></h1>
-        <a href="<?php echo Yii::app() -> baseUrl."/stat/full"; ?>">К списку линий</a>
+        <a href="<?php echo Yii::app() -> baseUrl."/stat/full/".$_GET["from"]."/".$_GET["to"]; ?>">К списку линий</a>
         <?php $this -> renderPartial('//stat/attrButton',["attr" => $attr]); ?>
         <div><?php echo $datepicker; ?></div>
         <div>

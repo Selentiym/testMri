@@ -13,7 +13,7 @@ $translate = array(
     'assigned' => 'Записан',
 );
 ?>
-<tr>
+<tr class="call <?php echo $model -> Classify(); ?>">
     <td><?php echo $i; ?></td>
     <td><?php echo $translate[$model -> Classify()]; ?></td>
     <td><?php echo $model -> mangoTalker; ?></td>

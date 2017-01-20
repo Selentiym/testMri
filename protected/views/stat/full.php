@@ -7,12 +7,14 @@
  */
 if (Yii::app() -> user -> checkAccess("admin")):
     $this -> renderPartial('//navBar',array('button' => 'no'));
-    Yii::app()->user->setState("dateAttr", $_GET["attr"], "calledDate");
-    $attr = Yii::app() -> user -> getState("dateAttr","calledDate");
+    $attr = $_GET["attr"];
     if (!in_array($attr,["calledDate","date"])) {
-        $attr = "calledDate";
+        $attr = Yii::app() -> user -> getState("dateAttr","calledDate");
     }
-
+    if (!in_array($attr,["calledDate","date"])) {
+        $attr = "date";
+    }
+    Yii::app()->user->setState("dateAttr", $attr, "calledDate");
 /**
  * @type Controller $this
  */
