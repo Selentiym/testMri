@@ -226,10 +226,18 @@
 			);
 		}
 
+		protected function getTokedDataFilePath() {
+			$tokenDataFile = $this->config['tokenDataFile'];
+			if (!is_file($tokenDataFile)) {
+				$tokenDataFile = __DIR__.'/'.$tokenDataFile;
+			}
+			return $tokenDataFile;
+		}
+
 		protected function saveOAuth2TokenData(array $data) {
 
 			file_put_contents(
-				$this->config['tokenDataFile'],
+					$tokenDataFile = $this -> getTokedDataFilePath(),
 				serialize($data)
 			);
 		}
@@ -238,10 +246,7 @@
 		private function loadOAuth2TokenData() {
 
 			//$tokenDataFile = $this->config['tokenDataFile'];
-			$tokenDataFile = $this->config['tokenDataFile'];
-			if (!is_file($tokenDataFile)) {
-				$tokenDataFile = __DIR__.'/'.$tokenDataFile;
-			}
+			$tokenDataFile = $this -> getTokedDataFilePath();
 			if (!is_file($tokenDataFile)) {
 				echo(sprintf(
 					"Error: unable to locate token file [%s]\n",

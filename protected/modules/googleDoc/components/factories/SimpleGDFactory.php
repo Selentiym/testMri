@@ -20,6 +20,12 @@ class SimpleGDFactory extends aGDCallFactory{
         }
         return null;
     }
+
+    /**
+     * @param aGDCall $gdCall
+     * @return GDCall|null
+     * @throws GoogleDocApiException
+     */
     public function buildByRecord(aGDCall $gdCall) {
         if (!$gdCall) {
             throw new GoogleDocApiException('Invalid argument for '.__CLASS__.'::buildByRecord. (bool) = false!');
@@ -51,13 +57,20 @@ class SimpleGDFactory extends aGDCallFactory{
      * @return aGDCall
      */
     public function buildNew(){
-        return new GdCallDBCached();
+        return new GDCallDBCached();
     }
 
+    /**
+     * @param \Google\Spreadsheet\ListEntry $entry
+     * @return aGDCall|null
+     */
     public function buildByEntry($entry){
-        $obj = $this -> buildNew();
-        $obj -> initialize($entry, $this);
-        return $obj;
+        if ($entry) {
+            $obj = $this->buildNew();
+            $obj->initialize($entry, $this);
+            return $obj;
+        }
+        return null;
         //return new GDCall($entry, $this);
     }
 
@@ -74,12 +87,19 @@ class SimpleGDFactory extends aGDCallFactory{
         }, $entries);
     }
 
+    /**
+     * @param mixed $info
+     * @return aGDCall
+     */
+    public function buildByInfo($info) {
+        return $this -> buildByEntry(end($this -> lookByInfo($info)));
+    }
 
     /**
      * @param mixed[] $info
      * @return Google\Spreadsheet\ListEntry[]
      */
-    public function buildByInfo($info) {
+    public function lookByInfo($info) {
         //Задаем параметры времени
         $time = $info['time'] > 0 ? $info['time'] : 'noTime';
         $corridor = $this -> getFrame($time == 'noTime' ? null : $time );
@@ -115,7 +135,7 @@ class SimpleGDFactory extends aGDCallFactory{
             $withDayCond = self::addCond($cond, 'дата = "'.date('j.m', $time).'"');
             $withDay = $this -> ScanGoogle(['sq' => $withDayCond['condition']], $time);
             if (!empty($withDay)) {
-                return $this -> buildByEntries($withDay);
+                return $withDay;
             }
         }
         /**
@@ -137,7 +157,8 @@ class SimpleGDFactory extends aGDCallFactory{
                 break;
             }
         }
-        return $this -> buildByEntries($rez);
+        //var_dump($cond);
+        return $rez;
     }
 
     public function getYear() {
@@ -150,11 +171,13 @@ class SimpleGDFactory extends aGDCallFactory{
     /**
      * @param mixed[] $args - an array to be given to the google api
      * @param integer $referenceTime
-     * @return Google\Spreadsheet\ListEntry[]|null
+     * @return \Google\Spreadsheet\ListEntry[]|null
+     * @throws GoogleDocApiException
      */
     public function ScanGoogle($args, $referenceTime) {
         if (!$referenceTime) {
-            return null;
+            throw new GoogleDocApiException('Reference time was not specified in ScanGoogle.');
+            //return null;
         }
         $this -> year = date('Y', $referenceTime);
         $months = [1 => 'January',2 => 'February',3 => 'March',4 => 'April',5 => 'May',6 => 'June',7 => 'July',8 => 'August',9 => 'September',10 => 'October',11 => 'November',12 => 'December'];
@@ -169,6 +192,7 @@ class SimpleGDFactory extends aGDCallFactory{
         if (!$send) {
             return [];
         }
+        //var_dump([$args,$work]);
         $data = $this -> api -> giveData($args,false,$work);
 
         return $data -> getEntries();

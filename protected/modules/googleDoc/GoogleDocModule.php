@@ -42,6 +42,11 @@ class GoogleDocModule extends CWebModule  implements iCallFunc{
 		else
 			return false;
 	}
+
+	/**
+	 * @param $info
+	 * @return aGDCall
+	 */
 	public function lookForGD($info) {
 		return $this -> getFactory() -> buildByInfo($info);
 	}

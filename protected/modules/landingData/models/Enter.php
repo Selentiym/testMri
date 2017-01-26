@@ -11,6 +11,7 @@
  * @property integer $last_request
  * @property integer $active
  * @property integer $called
+ * @property integer $id_gd
  *
  * @property phNumber $number
  * @property TCall[] $tCalls
@@ -55,7 +56,9 @@ class Enter extends landingDataModel implements iTimeFactorable, iNumberFactorab
 		return array(
 				'number' => array(self::BELONGS_TO, 'phNumber', 'id_num'),
 				'tCalls' => array(self::HAS_MANY, 'TCall', 'id_enter'),
-				'experiment' => array(self::HAS_ONE, 'GlobalExperiment','id_enter')
+				'experiment' => array(self::HAS_ONE, 'GlobalExperiment','id_enter'),
+				//'gd' => array(self::BELONGS_TO, 'GDCallFactorable', 'id_gd')
+				'gd' => array(self::HAS_ONE, 'GDCallFactorable', 'id_enter')
 		);
 	}
 
@@ -126,28 +129,113 @@ class Enter extends landingDataModel implements iTimeFactorable, iNumberFactorab
 	}
 
 	/**
+	 * @return TCall|null
+	 */
+	public function getLastTCall() {
+		return end($this -> tCalls);
+	}
+	/**
 	 * @return string the dialed number
 	 */
 	public function getDialedNumber() {
-		if ( end($this -> tCalls) -> numberDialed instanceof phNumber ) {
-			return end($this->tCalls)->numberDialed->short_number;
+		if ( $this -> getLastTCall() -> numberDialed instanceof phNumber ) {
+			return $this -> getLastTCall() ->numberDialed->short_number;
 		}
 		return 'none';
+	}
+	/**
+	 * @return string|false client's number
+	 */
+	public function getClientNumber() {
+		$t = $this -> getLastTCall();
+		if ($t instanceof TCall) {
+			return  $t -> getClientNumber();
+		}
+		return false;
+	}
+
+	/**
+	 * @return aGDCall|null
+	 */
+	public function getGoogleDoc() {
+
+		if ($gd = $this -> gd) {
+			return $gd;
+		}
+		return null;
+		//return $this -> scanDataBaseForGoogleDoc();
+		//return $this -> lookForGoogleDoc();
+	}
+
+	/**
+	 * @return aGDCall|null
+	 */
+	public function scanDataBaseForGoogleDoc(){
+		if ($num = $this -> getClientNumber()) {
+			$time = strtotime($this -> created);
+			$cr = StatCall::giveCriteriaForTimePeriod($time - 3600 * 24, $time + 3600 * 24 * 3, 'calledDate');
+			$cr->compare('number', $num);
+			$cr -> order = 'calledDate DESC';
+			$gd = GDCallFactorable::model() -> find($cr);
+			if ($gd) {
+				$this -> id_gd = $gd -> id;
+				$this -> save(['id_gd']);
+			}
+			return $gd;
+		}
+		return null;
+	}
+
+	/**
+	 * @return aGDCall|null
+	 */
+	public function lookForGoogleDoc() {
+		if ($num = $this -> getClientNumber()) {
+			$mod = Yii::app() -> getModule("googleDoc");
+			/**
+			 * @type GoogleDocModule $mod
+			 */
+			$gd = $mod -> lookForGD(['number' => $num, 'time' => strtotime($this -> created)]);
+			if ($gd instanceof aGDCall) {
+				$gd->setScenario(GDCallDBCached::REFRESH_IF_DUPLICATE);
+				if (!($gd->save())) {
+					var_dump($gd->getErrors());
+					var_dump($gd->id);
+				}
+				if ($gd->id) {
+					$this->id_gd = $gd->id;
+					$this->save(['id_gd']);
+				}
+			}
+			//var_dump($gd);
+			return $gd;
+		}
+		return null;
 	}
 
 	/**
 	 * @return bool whether the call led to an assignment
 	 */
-	public function getAssigned()
-	{
-		// TODO: Implement getAssigned() method.
+	public function getAssigned() {
+		if ($gd = $this -> getGoogleDoc()) {
+			/**
+			 * @type GDCallFactorable $gd
+			 */
+			return $gd -> getAssigned();
+		}
+		return false;
 	}
 
 	/**
 	 * @return bool whether the call led to a completed research and was rewarded
 	 */
-	public function getVerified()
-	{
-		// TODO: Implement getVerified() method.
+	public function getVerified() {
+		if ($gd = $this -> getGoogleDoc()) {
+			/**
+			 * @type GDCallFactorable $gd
+			 */
+			return $gd -> getVerified();
+		}
+		return false;
 	}
 }

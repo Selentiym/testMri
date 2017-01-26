@@ -18,8 +18,10 @@
  * @property phNumber $numberDialed
  * @property Enter $enter
  */
-class TCall extends landingDataModel
-{
+class TCall extends landingDataModel implements iATSCall{
+	public $landingId;
+	public $landing;
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -121,5 +123,38 @@ class TCall extends landingDataModel
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getClientNumber() {
+		return $this -> CallerIDNum;
+	}
+
+	/**
+	 * @return int UNIX timestamp of the call
+	 */
+	public function getCallTime() {
+		return strtotime($this -> called);
+	}
+
+	/**
+	 * @param mixed $external
+	 * @return int|string line identification(not just table id!) which this call corresponds to
+	 */
+	public function getLineI($external = null) {
+		return $this -> landingId;
+	}
+	public function setLanding($land){
+		if ($land instanceof Landing) {
+			$this -> landingId = $land -> textId;
+			$this -> landing = $land;
+		} else {
+			$this -> landingId = $land;
+		}
+	}
+	public function getLandingId(){
+		return $this -> landingId;
 	}
 }

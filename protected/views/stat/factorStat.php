@@ -13,17 +13,49 @@ $range = ["from" => $_GET["from"], "to" => $_GET["to"]];
  * Time: 15:34
  */
 $mod = Yii::app() -> getModule('landingData');
+Yii::app() -> getModule('googleDoc');
 /**
  * @type landingDataModule $mod
  */
-$calls = $mod -> getEnterData('mrktClinics', landingDataModule::giveCriteriaForTimePeriod($range['from'], $range['to']));
+$calls_init = $mod -> getEnterData('mrktClinics', landingDataModule::giveCriteriaForTimePeriod($range['from'], $range['to']));
+//$calls_init = $mod -> getEnterData('mrktClinics', landingDataModule::giveCriteriaForTimePeriod(1485201600, 1485287999));
+$calls = [];
+if ($_GET["num"]>0) {
+    $num = $_GET["num"];
+} else {
+    $num = 10;
+}
+for ($i = 0; $i < $num; $i++) {
+    $calls[] = $calls_init[array_rand($calls_init)];
+}
+//var_dump($range);
+//var_dump($calls);
 //$calls =
 $factorA = new NumberFactor();
+
 //$factorA = new TimeFactor(60*60, 'H:i');
+if (true) {
+//if ($_GET["num"] == 'inf') {
+    $calls = $calls_init;
+}
+//$enter = Enter::model() -> findByPk(60);
+//echo (string) $enter -> getAssigned();
 
-$v = [new CountFactor()];
+//echo "<pre>";
+//var_dump($enter -> getGoogleDoc());
+//echo "</pre>";
+//$gd = $enter -> getGoogleDoc();
+//echo (string)$gd -> getAssigned();
+
+
+$v = [new ParameterFactor('called'), new AssignedFactor()];
+//echo "<p>Выбранное количество заходов: ". $num."</p>";
+//echo "<p>Чтобы выбрать все записи, введите 'inf'</p>";
+//echo "<form><input type='text' name='num'/><input type='submit'></form>";
+//var_dump($factorA -> factorizeData($calls));
 GraphicsByFactors::GoogleDocGraph($factorA,$calls, $v);
-
+//echo "<div>";var_dump($factorA -> getResult());echo "</div>";
+//phpinfo();
 return;
 
 //var_dump($calls);

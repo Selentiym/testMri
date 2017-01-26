@@ -15,7 +15,7 @@
  * @property integer $type
  * @property integer $i
  */
-class mCall extends UModel
+class mCall extends UModel implements iATSCall
 {
 
 	private static $_lastCallTime;
@@ -207,5 +207,20 @@ class mCall extends UModel
 		//Yii::app() -> end();
 		$q = mysqli_query(MysqlConnect::getConnection(), $sql);
 		return externalStat::AverageByPeriodFromSQLRez($q, $periodMins);
+	}
+
+	/**
+	 * @return int UNIX timestamp of the call
+	 */
+	public function getCallTime() {
+		return strtotime($this -> date);
+	}
+
+	/**
+	 * @param mixed $external
+	 * @return int|string line identification(not just table id!) which this call corresponds to
+	 */
+	public function getLineI($external = null) {
+		return $this -> i;
 	}
 }

@@ -54,16 +54,41 @@ class landingDataModule extends CWebModule {
      * @return Enter[]
      */
     public function getEnterData($id, CDbCriteria $criteria = null){
+        return $this -> getClassData('Enter', $id, $criteria);
+    }
+    /**
+     * @param $id
+     * @param CDbCriteria $criteria
+     * @return Enter[]
+     */
+    public function getTCallData($id, CDbCriteria $criteria = null){
+        return $this -> getClassData('TCall', $id, $criteria);
+    }
+
+    public function iterateLandingsForClassData($class, CDbCriteria $criteria = null) {
+        $lands = Landing::model() -> findAll();
+        $rez = [];
+        foreach ($lands as $land) {
+            $id = $land -> textId;
+            $rez[$id] = $this -> getClassData($class, $id, $criteria);
+        }
+        return $rez;
+    }
+    /**
+     * @param $class
+     * @param $id
+     * @param CDbCriteria $criteria
+     * @return Enter[]
+     */
+    public function getClassData($class, $id, CDbCriteria $criteria = null){
         if (!$criteria) {
             $criteria = new CDbCriteria();
         }
         $land = $this -> getLanding($id);
         $conn = $land -> getDataConnection();
         self::setConnection($conn);
-        $conn = Enter::model() -> getDbConnection();
-        return Enter::model()->findAll($criteria);
+        return $class::model()->findAll($criteria);
     }
-
 
     /**
      * UNIX timestamp required
