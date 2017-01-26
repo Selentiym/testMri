@@ -56,9 +56,9 @@ class SiteController extends Controller
 				'view' => '//users/_userlistActive'
 			),
 			'addData'=>array(
-				'class'=>'application.controllers.site.FileViewAction',
-				'access' => function () {return Yii::app() -> user -> checkAccess('admin');},
-				'view' => '//addToDataBase'
+					'class'=>'application.controllers.site.FileViewAction',
+					'access' => function () {return Yii::app() -> user -> checkAccess('admin');},
+					'view' => '//addToDataBase'
 			),
 			'entries'=>array(
 				'class'=>'application.controllers.site.FileViewAction',
@@ -503,7 +503,7 @@ class SiteController extends Controller
 		echo count($users);
 	}
 	public function actionCheckDebug(){
-		echo "debug!new";
+		echo "check sync2!";
 	}
 	public function actionLoadDataByTime(){
 		$t = microtime(true);
@@ -527,9 +527,14 @@ class SiteController extends Controller
 		echo "time:".(microtime(true) - $t)."<br/>";
 	}
 	public function actionCheck () {
+		//$was = GDCallFactorable::model() -> findByPk(10609);
+		/*$mod = Yii::app() -> getModule('googleDoc');
+		$check = new GDCallFactorable();
+		$check -> id = 10609;
+		$check -> research_type = 'check!';
+		$check -> setIsNewRecord(false);
+		$check -> save(['research_type']);*/
 		$this -> render('//stat/factorStat');
-		//echo strtotime('yesterday');
-		//StatCall::refreshInPeriod(strtotime('last month'), time() + 24*60*60*15);
 
 
 

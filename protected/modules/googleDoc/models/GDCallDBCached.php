@@ -29,8 +29,9 @@
  * @property string $State
  * @property integer $id_enter
  */
-class GdCallDBCached extends GDCall
+class GDCallDBCached extends GDCall
 {
+	const REFRESH_IF_DUPLICATE = 'refreshIfFound';
 	/**
 	 * @return string the associated database table name
 	 */
@@ -165,6 +166,11 @@ class GdCallDBCached extends GDCall
 			$copy = static::model() -> findByAttributes(['external_id' => $this -> external_id]);
 			if ($copy) {
 				if ($this -> compareWith($copy)) {
+					$this -> id = $copy -> id;
+					if ($this -> getScenario() == self::REFRESH_IF_DUPLICATE) {
+						$this -> setIsNewRecord(false);
+						$this -> save();
+					}
 					return false;
 				}
 			}
