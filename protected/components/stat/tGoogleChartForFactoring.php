@@ -44,6 +44,7 @@ trait tGoogleChartForFactoring{
              * @type iFactorResult $res
              */
             $objects = $res -> giveObjects();
+            $numObjs = $res -> getObjectsNumber();
             //if no objects correspond to this factor realisation
             if (empty($objects)) {
                 $toRet = $pattern;
@@ -52,7 +53,7 @@ trait tGoogleChartForFactoring{
             }
             foreach ($objects as $obj) {
                 if ($func) {
-                    $tempDataSource = call_user_func($func, $obj);
+                    $tempDataSource = call_user_func($func, $obj, $numObjs);
                     foreach($pattern as $key => $garbage) {
                         if (!isset($toRet[$key])) {
                             $toRet[$key] = 0;

@@ -74,10 +74,19 @@ class GoogleChartsWidget extends CWidget {
             google.charts.load('current', {'packages':['corechart']});
         ",CClientScript::POS_READY);
         $id = $this -> params['id'];
-        $options = json_encode($this -> options);
+        $options = CJavaScript::encode($this -> options);
         $data = json_encode(array_values([$this -> header] + $this -> data));
+        //var chart = drawAreaChart($data, $options, $('#$id').get(0));});
         Yii::app() -> getClientScript() -> registerScript($id,"
-        google.charts.setOnLoadCallback(function(){drawAreaChart($data, $options, $('#$id').get(0));});
+        google.charts.setOnLoadCallback(function(){
+            var data = $data;
+            var chart = drawAreaChart(data, $options, $('#$id').get(0));
+            var params = {};
+            chart.data = data;
+            chart.factorId = 'check!';
+            console.log(chart);
+            google.visualization.events.addListener(chart, 'select', function(e){chartsClickHandler.call(chart, e, data);});
+        });
         ",CClientScript::POS_READY);
     }
 }

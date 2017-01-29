@@ -14,10 +14,12 @@ class GraphicsByFactors {
      */
     public static function GoogleDocGraph(iFactor $factor, array $data, array $viewFactors){
         $factor -> factorizeData($data);
-        $func = function($obj) use ($viewFactors) {
+        $func = function($obj, $numObjects) use ($viewFactors) {
             $temp = [];
+            $multiplier = $numObjects > 0 ? 1/$numObjects : 0;
             foreach ($viewFactors as $vFactor) {
-                $temp[] = $vFactor -> apply($obj);
+                $m = $vFactor -> getParam('conversion') ? $multiplier : 1;
+                $temp[] = $vFactor -> apply($obj) * $m;
             }
             return $temp;
         };
@@ -28,10 +30,10 @@ class GraphicsByFactors {
         }
         $data = $factor -> getResultArrayForGoogleCharts($func, array_fill(0, count($viewFactors), 0));
         //return;
-        Yii::app() -> controller->widget('application.extensions.googleCharts.GoogleChartsWidget', array(
+        return Yii::app() -> controller->widget('application.extensions.googleCharts.GoogleChartsWidget', array(
             'params' => [],
             'data' => $data,
             'header' => $header
-        ));
+        ), true);
     }
 }

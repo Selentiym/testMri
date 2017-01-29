@@ -17,7 +17,7 @@
  * @property TCall[] $tCalls
  * @property GlobalExperiment $experiment
  */
-class Enter extends landingDataModel implements iTimeFactorable, iNumberFactorable, iFactorable, iCallFactorable
+class Enter extends landingDataModel implements iTimeFactorable, iNumberFactorable, iFactorable, iCallFactorable, iExperimentFactorable
 {
 	public $called;
 	/**
@@ -237,5 +237,12 @@ class Enter extends landingDataModel implements iTimeFactorable, iNumberFactorab
 			return $gd -> getVerified();
 		}
 		return false;
+	}
+
+	/**
+	 * @return GlobalExperiment
+	 */
+	public function getExperiment(){
+		return $this -> experiment;
 	}
 }

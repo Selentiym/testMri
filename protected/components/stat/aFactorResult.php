@@ -86,4 +86,11 @@ abstract class aFactorResult implements iFactorResult {
     public function giveObjects() {
         return $this -> _objects;
     }
+
+    /**
+     * @return int
+     */
+    public function getObjectsNumber(){
+        return count($this -> giveObjects());
+    }
 }

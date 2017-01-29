@@ -191,6 +191,10 @@ abstract class aFactor implements iFactor {
      * @return string
      */
     public function getName() {
-        return $this -> name;
+        if ($this -> getParam('conversion')) {
+            return 'Конверсия: '.$this->name;
+        } else {
+            return $this -> name;
+        }
     }
 }

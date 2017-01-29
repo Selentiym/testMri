@@ -31,7 +31,7 @@ for ($i = 0; $i < $num; $i++) {
 //var_dump($range);
 //var_dump($calls);
 //$calls =
-$factorA = new NumberFactor();
+
 
 //$factorA = new TimeFactor(60*60, 'H:i');
 if (true) {
@@ -46,14 +46,34 @@ if (true) {
 //echo "</pre>";
 //$gd = $enter -> getGoogleDoc();
 //echo (string)$gd -> getAssigned();
-
-
-$v = [new ParameterFactor('called'), new AssignedFactor()];
+$factorA = new ExperimentFactor('price');
+$ass = new AssignedFactor();
+$ass -> setParam('conversion', 1);
+$called = new ParameterFactor('called');
+$called -> setParam('conversion', 1);
+$v = [$called, $ass];
 //echo "<p>Выбранное количество заходов: ". $num."</p>";
 //echo "<p>Чтобы выбрать все записи, введите 'inf'</p>";
 //echo "<form><input type='text' name='num'/><input type='submit'></form>";
 //var_dump($factorA -> factorizeData($calls));
-GraphicsByFactors::GoogleDocGraph($factorA,$calls, $v);
+echo $datepicker;
+echo GraphicsByFactors::GoogleDocGraph($factorA,$calls, $v);
+//foreach ($ass -> getResult() as $result) {
+//    echo "<h3>".$result -> getId()."</h3><div>";
+//    foreach ($result -> giveObjects() as $enter){
+//        $call = $enter -> getGoogleDoc();
+//        /**
+//         * @type GDCallFactorable $call
+//         */
+//        echo "<p>";
+//        echo "<span>".$call -> mangoTalker.'</span>, ';
+//        echo "<span>".$call -> fio.'</span>, ';
+//        echo "<span>".$call -> id_call_type.'</span>, ';
+//        echo "<span>".$call -> calledDate.'</span>, ';
+//        echo "</p>";
+//    }
+//    echo "</div>";
+//}
 //echo "<div>";var_dump($factorA -> getResult());echo "</div>";
 //phpinfo();
 return;

@@ -6,4 +6,8 @@ function drawAreaChart(data, options, element) {
 
     var chart = new google.visualization.AreaChart(element);
     chart.draw(data, options);
+    return chart;
+}
+function chartsClickHandler(){
+    alert("123");
 }

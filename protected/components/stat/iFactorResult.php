@@ -49,4 +49,9 @@ interface iFactorResult {
      * @return iFactor
      */
     public function getFactor();
+
+    /**
+     * @return int number of objects with the corresponding value after factorizing
+     */
+    public function getObjectsNumber();
 }
