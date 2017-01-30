@@ -164,8 +164,9 @@ return array(
 				
 				'<action:\w+>' => 'site/<action>',
 				'<action:\w+>/<id:\d+>' => 'site/<action>',
-				
-				
+
+
+				'<controller:\w+>/<action:\w+>/<from:\d+>/<to:\d+>'=>'<controller>/<action>',
 				'<controller:\w+>/<id:\d+>'=>'<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
 				//'<controller:\w+>/<action:\w+>/<arg:\w+>'=>'<controller>/<action>',

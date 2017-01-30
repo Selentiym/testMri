@@ -36,6 +36,20 @@ class DataController extends Controller {
         ob_end_clean();
         Yii::app() -> user -> setFlash('savingErrors',$out);
     }
+    public function actionChart($from, $to){
+        $graph = current($_POST["graphs"]);
+        $factors = FactorForm::createGraphFactorsFromConfig($graph);
+        //
+        $mod = Yii::app() -> getModule('landingData');
+        Yii::app() -> getModule('googleDoc');
+        /**
+         * @type landingDataModule $mod
+         */
+        $calls = $mod -> getEnterData('mrktClinics', landingDataModule::giveCriteriaForTimePeriod($from, $to));
+        $rez = GraphicsByFactors::GoogleDocGraphData($factors['filter'],$calls, $factors['view']);
+        echo json_encode($rez);
+        //
+    }
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()

@@ -10,9 +10,9 @@ class GraphicsByFactors {
      * @param iFactor $factor
      * @param iFactorable[] $data
      * @param iFactor[] $viewFactors to be displayed
-     * @return string - dom element with graph attached to it
+     * @return mixed[] - array of data and header
      */
-    public static function GoogleDocGraph(iFactor $factor, array $data, array $viewFactors){
+    public static function GoogleDocGraphData(iFactor $factor, array $data, array $viewFactors){
         $factor -> factorizeData($data);
         $func = function($obj, $numObjects) use ($viewFactors) {
             $temp = [];
@@ -29,11 +29,20 @@ class GraphicsByFactors {
             $header[] = $f -> getName();
         }
         $data = $factor -> getResultArrayForGoogleCharts($func, array_fill(0, count($viewFactors), 0));
-        //return;
+        return ['data' => $data, 'header' => $header];
+    }
+    /**
+     * @param iFactor $factor
+     * @param iFactorable[] $data
+     * @param iFactor[] $viewFactors to be displayed
+     * @return string - dom element with graph attached to it
+     */
+    public static function GoogleDocGraph(iFactor $factor, array $data, array $viewFactors){
+        $input = self::GoogleDocGraphData($factor, $data, $viewFactors);
         return Yii::app() -> controller->widget('application.extensions.googleCharts.GoogleChartsWidget', array(
             'params' => [],
-            'data' => $data,
-            'header' => $header
+            'data' => $input['data'],
+            'header' => $input['header']
         ), true);
     }
 }

@@ -1,0 +1,36 @@
+.graphMenu * {
+    vertical-align:top;
+}
+.graphMenu .factorSet {
+    width:39%;
+    margin: 10px 5%;
+    padding:10px 2%;
+    display:inline-block;
+}
+.graphMenu .factorsContainer {
+    border: 1px solid black;
+    padding:20px;
+}
+.graphMenu .add {
+    width:20px;
+    height:20px;
+    background-image: url('../images/plus_small.png');
+    display: inline-block;
+    vertical-align:middle;
+}
+.graphMenu .delete {
+    vertical-align:middle;
+    width:16px;
+    height:16px;
+    margin: 2px;
+    background-image: url('../images/deleteRange.png');
+    display: inline-block;
+}
+.graphMenu .factor {
+    border:1px solid black;
+    padding:3px;
+    margin:5px;
+}
+.parameter input {
+    display: inline-block;
+}

@@ -11,10 +11,13 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl.'/js/bundl
 
 $url = str_replace("%startTime%","' + start.unix() + '", $url);
 $url = str_replace("%endTime%","' + end.unix() + '", $url);
-
+$func = ($url == 'func') ? $function : "Standard";
 Yii::app()->getClientScript()->registerScript('DatePickerRange',"
     $(function () {
-
+        function Standard (start, end, label) {
+            //end.subtract(1, 'days');
+            window.location.href = '".$url."';
+        }
         $('#reportrange').daterangepicker({
             format: 'DD.MM.YYYY',
             startDate: '".date('d.m.Y', $range['from'])."',
@@ -44,10 +47,7 @@ Yii::app()->getClientScript()->registerScript('DatePickerRange',"
                 monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июлю', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
                 firstDay: 1
             }
-        }, function (start, end, label) {
-            //end.subtract(1, 'days');
-            window.location.href = '".$url."';
-        });
+        }, $func);
 
     });
 ", CClientScript::POS_END);
@@ -105,8 +105,8 @@ $_GET["to"] = $range["to"];
 <span id="reportrange" style="border-bottom: dotted 1px; font-size: 150%">
     <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
     <span><small>с</small>
-        <?php echo strtr(date("d F Y",$range['from']), $translate); ?>
+        <span id="fromDatepicker"><?php echo strtr(date("d F Y",$range['from']), $translate); ?></span>
         <small>по</small>
-        <?php echo strtr(date("d F Y",$range['to']),$translate); ?>
+        <span id="toDatepicker"><?php echo strtr(date("d F Y",$range['to']),$translate); ?></span>
     </span> <b class="caret"></b>
 </span>

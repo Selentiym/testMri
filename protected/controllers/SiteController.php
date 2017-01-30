@@ -527,6 +527,7 @@ class SiteController extends Controller
 		echo "time:".(microtime(true) - $t)."<br/>";
 	}
 	public function actionCheck () {
+		var_dump($_GET);
 		//$was = GDCallFactorable::model() -> findByPk(10609);
 		/*$mod = Yii::app() -> getModule('googleDoc');
 		$check = new GDCallFactorable();
@@ -534,7 +535,9 @@ class SiteController extends Controller
 		$check -> research_type = 'check!';
 		$check -> setIsNewRecord(false);
 		$check -> save(['research_type']);*/
-		$this -> render('//stat/factorStat');
+
+
+		//$this -> render('//stat/factorStat');
 
 
 
