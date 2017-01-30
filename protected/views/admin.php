@@ -28,6 +28,7 @@
             <div class="panel-body">
 
                 <?php echo CHtml::link('Общие данные', Yii::app() -> baseUrl . '/data',array('class'=>"list-group-item")); ?>
+                <?php echo CHtml::link('Факторная статистика', Yii::app() -> baseUrl . '/factorStat',array('class'=>"list-group-item")); ?>
                 <?php echo CHtml::link('Ошибки', Yii::app() -> baseUrl.'/errors',array('class'=>"list-group-item")) ?>
                 <?php echo CHtml::link('Настройки', Yii::app() -> baseUrl.'/settings',array('class'=>"list-group-item")) ?>
 				<?php //echo CHtml::link('Общие данные', Yii::app() -> baseUrl() . '/data'); ?>

@@ -1,6 +1,11 @@
 /**
  * Created by user on 09.10.2016.
  */
+function getLoader() {
+    return $('<img/>',{
+        src:baseUrl + '/images/loading.gif'
+    });
+}
 function drawAreaChart(data, options, element) {
     data = google.visualization.arrayToDataTable(data);
 
@@ -157,7 +162,7 @@ function FactorSet(config){
             baseName: this.baseName + '['+this.factors.length+']'
         });
         this.addFactor(fact);
-        fact.addParameter(fact.newParameter());
+        //fact.addParameter(fact.newParameter());
         return fact;
     };
     this.element.append(this.factorsContainer);
@@ -229,8 +234,10 @@ function GraphForm(config){
     this.element.append(this.graphCont);
     GraphsContainer.append(this.element);
     this.draw = function(){
+        this.graphCont.html(getLoader());
         $.post(baseUrl + '/data/chart/'+fromTimeUnix+'/'+toTimeUnix,this.element.serialize(),null, "JSON").done(bind(function(data){
             google.charts.setOnLoadCallback(bind(function() {
+                this.graphCont.html("");
                 this.chart = drawAreaChart(data, {}, this.graphCont.get(0));
             },this));
         },this));
@@ -247,7 +254,14 @@ function submitMainForm(){
     $form.attr("action",baseUrl + '/factorStat/' + start + '/'+ end);
     $form.submit();
 }
+function formatDate(date){
+    return date.getDate() + '.' + (date.getMonth() + 1) + '.' + (1900 + date.getYear());
+}
 function datePickerUpdate(start, end, label){
+    var from = new Date(start);
+    var to = new Date(end);
+    $("#fromDatepicker").html(formatDate(from));
+    $("#toDatepicker").html(formatDate(to));
     fromTimeUnix = Math.floor(start / 1000);
     toTimeUnix = Math.floor(end / 1000);
 }
