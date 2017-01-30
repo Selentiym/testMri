@@ -47,7 +47,7 @@ class DataController extends Controller {
          */
         $calls = $mod -> getEnterData('mrktClinics', landingDataModule::giveCriteriaForTimePeriod($from, $to));
         $rez = GraphicsByFactors::GoogleDocGraphData($factors['filter'],$calls, $factors['view']);
-        echo json_encode($rez);
+        echo json_encode(array_values([$rez['header']] + $rez['data']));
         //
     }
 	// Uncomment the following methods and override them if needed

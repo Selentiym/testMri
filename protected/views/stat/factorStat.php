@@ -8,6 +8,7 @@
 $datepicker = $this -> renderPartial("//_datepicker",["get" => $get, "from" => $from, "to" => $to,"url" => "func", "function" => "datePickerUpdate"],true);
 $cs = Yii::app() -> getClientScript();
 $cs -> registerScriptFile(Yii::app() -> baseUrl.'/js/chartsGoogle.js',CClientScript::POS_BEGIN);
+$cs -> registerScriptFile(Yii::app() -> baseUrl.'/js/GoogleChartsLoader.js',CClientScript::POS_BEGIN);
 $cs -> registerScript('checkGraph',"
     $('#newGraph').click(function(){
         var gr = new GraphForm({});
@@ -36,6 +37,9 @@ $('#draw').click(function(){
         graphs[i].draw();
     }
 });
+",CClientScript::POS_READY);
+Yii::app() -> getClientScript() -> registerScript("google_charts_load_library","
+    google.charts.load('current', {'packages':['corechart']});
 ",CClientScript::POS_READY);
 echo $datepicker;
 ?>
