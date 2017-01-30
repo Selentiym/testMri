@@ -25,7 +25,8 @@ function ParameterForm(config){
         value: config.value
     });
     this.close = $('<span>',{
-        class:"delete"
+        class:"delete",
+        title:"Удалить параметр"
     });
     this.destroy = function(){
         this.element.remove();
@@ -74,6 +75,19 @@ function FactorForm(config){
         class:"factor"
     });
     this.element.append(getFactorTypeElement(this));
+    var convParams = {
+        type:"checkbox",
+        value:"1",
+        name:this.baseName + '[conversion]',
+        class:'conversion',
+        title:'Конверсия'
+    };
+    if (this.config.conversion) {
+        convParams.checked = "checked";
+    }
+    delete this.config.conversion;
+    this.conversion = $('<input>',convParams);
+    this.element.append(this.conversion);
     this.parameterContainer = $("<div>",{
         class:"parameterContainer"
     });
@@ -81,7 +95,6 @@ function FactorForm(config){
         value:"Новый параметр",
         class:"addParameter add"
     });
-
     this.newButton.click(bind(function(){
         this.addParameter(this.newParameter());
     },this));
@@ -95,6 +108,17 @@ function FactorForm(config){
         this.parameterContainer.append(parameter.element);
         this.parameters.push(parameter);
     };
+    this.destroy = function(){
+        this.element.remove();
+    };
+    this.deleteFactor = $('<span>', {
+        class:"delete",
+        title:"Удалить фактор"
+    });
+    this.deleteFactor.click(bind(function(){
+        this.destroy();
+    },this));
+    this.element.append(this.deleteFactor);
     this.element.append(this.parameterContainer);
     this.element.append(this.newButton);
     console.log('baseName:'+this.nextParameterName());
@@ -164,6 +188,17 @@ function GraphForm(config){
         class:'graph'
     });
     this.element = $('<form>');
+    this.deleteGraph = $('<span>',{
+        class:"delete",
+        title:"Удалить график"
+    });
+    this.destroy = function(){
+        this.element.remove();
+    };
+    this.deleteGraph.click(bind(function(){
+        this.destroy();
+    },this));
+    this.element.append(this.deleteGraph);
     this.menuCont = $('<div>',{
         class:'graphMenu'
     });

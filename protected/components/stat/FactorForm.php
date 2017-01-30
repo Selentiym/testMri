@@ -15,6 +15,7 @@ class FactorForm {
         6 => 'Verified',
         7 => 'Day',
         8 => 'Number',
+        9 => 'Count',
     ];
     public static function getTypes(){
         return self::$_types;
@@ -50,9 +51,12 @@ class FactorForm {
      */
     public static function createFactorFromConfig($config){
         $name = self::getTypeName($config['type']).'Factor';
+        $conversion = $config['conversion'];
+        unset($config['conversion']);
         unset($config['type']);
         if (@Yii::autoload($name)) {
             $obj = new $name(current($config),next($config),next($config),next($config));
+            $obj -> setParam('conversion',$conversion);
             //call_user_func_array([$obj,'__construct'],$config);
             return $obj;
         } else {
