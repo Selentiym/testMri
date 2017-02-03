@@ -48,7 +48,7 @@ class GDCallDBCached extends GDCall
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('i, j, id_call_type, id_user, id_error, prev_month', 'numerical', 'integerOnly'=>true),
+			array('j, id_call_type, id_user, id_error, prev_month', 'numerical', 'integerOnly'=>true),
 			array('research_type, clinic', 'length', 'max'=>512),
 			array('H, wishes, report, comment', 'length', 'max'=>1024),
 			array('fio, birth', 'length', 'max'=>256),

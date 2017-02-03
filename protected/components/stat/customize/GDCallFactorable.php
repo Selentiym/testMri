@@ -14,9 +14,13 @@ class GDCallFactorable extends GDCallDBCached implements iCallFactorable, iFacto
         parent::initialize($entry, $factory);
         //Определили линию звонка
         $this -> lookForIAttribute();
+        //$i = $this -> i;
         //Если нам удалось определить, что звонок с лендинг, то сохраняем связь.
-        //Даже если реально звонок прикреплен к другой линии.
-        if ($tCall = $this -> getMinTCall()) {
+        //Не сохраняем эту связь в случае, если звонок прицепляется к любой другой линии.
+        //Если звонок без линии, то он нас тоже не интересует.
+        $tCall = $this -> getMinTCall();
+        //$attrs = $tCall -> attributes;
+        if (($tCall)&&($this -> i == $tCall -> getLandingId())&&($this -> i)) {
             $this -> id_enter = $tCall -> id_enter;
         }
     }
@@ -34,12 +38,16 @@ class GDCallFactorable extends GDCallDBCached implements iCallFactorable, iFacto
         }
         //Получили самый ранний манго звонок по этому номеру.
         $mCall = mCall::model() -> findByAttributes(array('fromPhone' => $this -> mangoTalker), ['order' => 'date ASC']);
+        //echo "<pre>";
+        //var_dump($mCall);
         $minTCall = $this -> getMinTCall();
+        //var_dump($minTCall);
+        //echo "</pre>";
         //Теперь выбираем что раньше: с лендинга или с манго.
         $minCall = $minTCall;
         if (($minTCall)&&($mCall)) {
             $delta = $minTCall -> getCallTime() - $mCall -> getCallTime();
-            if ($delta > 30) {
+            if ($delta < 30) {
                 $minCall = $minTCall;
             } else {
                 $minCall = $mCall;

@@ -162,7 +162,8 @@ class mCall extends UModel implements iATSCall
 					'city' => 1
 			]);
 
-			$url = 'http://new.web-utils.ru/api/calls?'.http_build_query($params);
+			$url = 'http://web-utils.ru/api/calls?'.http_build_query($params);
+			echo $url;
 			curl_setopt($curl, CURLOPT_URL, $url);
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
 			$out = curl_exec($curl);

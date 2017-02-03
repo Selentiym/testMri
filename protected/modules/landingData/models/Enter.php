@@ -58,7 +58,7 @@ class Enter extends landingDataModel implements iTimeFactorable, iNumberFactorab
 				'tCalls' => array(self::HAS_MANY, 'TCall', 'id_enter'),
 				'experiment' => array(self::HAS_ONE, 'GlobalExperiment','id_enter'),
 				//'gd' => array(self::BELONGS_TO, 'GDCallFactorable', 'id_gd')
-				'gd' => array(self::HAS_ONE, 'GDCallFactorable', 'id_enter')
+				'gd' => array(self::HAS_ONE, 'GDCallFactorable', 'id_enter','order' => 'id_call_type DESC')
 		);
 	}
 
@@ -221,7 +221,11 @@ class Enter extends landingDataModel implements iTimeFactorable, iNumberFactorab
 			/**
 			 * @type GDCallFactorable $gd
 			 */
-			return $gd -> getAssigned();
+			$ass = $gd -> getAssigned();
+//			if ($ass) {
+//				echo $gd -> fio.": ".$gd -> mangoTalker.", id_enter:". $gd -> id_enter.", id:".$gd -> id.", ".$this -> created."<br/>\r\n";
+//			}
+			return $ass;
 		}
 		return false;
 	}

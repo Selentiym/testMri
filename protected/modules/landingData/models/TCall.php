@@ -154,6 +154,17 @@ class TCall extends landingDataModel implements iATSCall{
 			$this -> landingId = $land;
 		}
 	}
+
+	/**
+	 * @param string $id
+	 */
+	public function setLandingId($id){
+		$this -> landingId = $id;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getLandingId(){
 		return $this -> landingId;
 	}

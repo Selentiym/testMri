@@ -54,7 +54,7 @@ class callStatusHelper {
             return $arr['side'];
         }
         //Если в поле "отчет" есть буквы, то НЕ записан.
-        if (preg_match('/[a-zA-Zа-яА-Я]/',$report)) {
+        if ((preg_match('/[a-zA-Zа-яА-Я]/',$report))||(!$report)) {
             return $arr['declined'];
         } else {
             return $arr['assigned'];
