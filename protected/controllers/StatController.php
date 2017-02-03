@@ -33,6 +33,16 @@ class StatController extends Controller {
 				'access' => function () {return Yii::app() -> user -> checkAccess('admin');},
                 'view' => '//stat/mangoCalls'
             ),
+			'factorStat' => array(
+				'class' => 'application.controllers.site.ModelViewAction',
+				'modelClass' => 'User',
+				'view' => '//stat/factorStat'
+			),
+			'factorList' => array(
+				'class' => 'application.controllers.site.ModelViewAction',
+				'modelClass' => 'User',
+				'view' => '//stat/factorList'
+			),
 		);
 	}
 	public function actionLoadStatistics(){

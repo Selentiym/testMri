@@ -7,15 +7,15 @@
  */
 class FactorForm {
     private static $_types = [
-        1 => 'Parameter',
-        2 => 'Time',
+        9 => 'Count',
         3 => 'Experiment',
+        2 => 'Time',
         4 => 'Called',
         5 => 'Assigned',
         6 => 'Verified',
         7 => 'Day',
         8 => 'Number',
-        9 => 'Count',
+        1 => 'Parameter',
     ];
     public static function getTypes(){
         return self::$_types;

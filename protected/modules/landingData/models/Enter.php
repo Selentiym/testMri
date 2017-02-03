@@ -16,6 +16,7 @@
  * @property phNumber $number
  * @property TCall[] $tCalls
  * @property GlobalExperiment $experiment
+ * @property GDCallFactorable $gd
  */
 class Enter extends landingDataModel implements iTimeFactorable, iNumberFactorable, iFactorable, iCallFactorable, iExperimentFactorable
 {

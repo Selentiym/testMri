@@ -103,9 +103,10 @@ return array(
 				'allCalls/<from:\d*>/<to:\d*>' => 'site/allCalls',
 				'allCalls/<from:\d*>' => 'site/allCalls',
 
-				'<action:(lineStatByFactors|factorStat)>/<from:\d*>/<to:\d*>' => 'site/<action>',
-				'<action:(lineStatByFactors|factorStat)>/<from:\d*>' => 'site/<action>',
-				
+				'<action:(lineStatByFactors|factorStat|factorList)>/<from:\d*>/<to:\d*>' => 'stat/<action>',
+				'<action:(lineStatByFactors|factorStat|factorList)>/<from:\d*>' => 'stat/<action>',
+				'<action:(lineStatByFactors|factorStat|factorList)>' => 'stat/<action>',
+
 				'errors/p<page:\d+>' => 'site/errors',
 				
 				'<arg:\w+>/info' => 'site/info',

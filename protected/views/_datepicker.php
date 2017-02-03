@@ -10,7 +10,9 @@ Yii::app()->getClientScript()->registerCssFile(Yii::app()->baseUrl.'/css/bundle-
 Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl.'/js/bundle-bundle_daterangepicker_defer.js');
 
 $url = str_replace("%startTime%","' + start.unix() + '", $url);
+$url = str_replace("%25startTime%25","' + start.unix() + '", $url);
 $url = str_replace("%endTime%","' + end.unix() + '", $url);
+$url = str_replace("%25endTime%25","' + end.unix() + '", $url);
 $func = ($url == 'func') ? $function : "Standard";
 Yii::app()->getClientScript()->registerScript('DatePickerRange',"
     $(function () {

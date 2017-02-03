@@ -15,9 +15,15 @@ function drawAreaChart(data, options, element) {
 }
 function chartsClickHandler(e){
     var sel = this.getSelection();
-    var row = sel[0].row;
-    var valueId = this.data[row + 1][0];
-    console.log("Selected item Id was: "+valueId);
+    if (sel[0]) {
+        var row = sel[0].row;
+        var column = sel[0].column;
+        var valueId = this.data[row + 1][0];
+        console.log("Selected item Id was: " + valueId);
+        console.log("Factor config was: ");
+        console.log(this.config);
+        location.href = baseUrl + '/factorList?'+this.config + '&from='+this.fromTimeUnix + '&to=' + this.toTimeUnix + '&column=' + column + '&row=' + row + '&valueId=' + valueId;
+    }
 }
 
 function ParameterForm(config){
@@ -239,6 +245,11 @@ function GraphForm(config){
             google.charts.setOnLoadCallback(bind(function() {
                 this.graphCont.html("");
                 this.chart = drawAreaChart(data, {}, this.graphCont.get(0));
+                this.chart.data = data;
+                this.chart.fromTimeUnix = fromTimeUnix;
+                this.chart.toTimeUnix = toTimeUnix;
+                this.chart.config = this.element.serialize();
+                google.visualization.events.addListener(this.chart, 'select', bind(function(e){chartsClickHandler.call(this.chart, e);},this));
             },this));
         },this));
     };
