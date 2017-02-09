@@ -8,6 +8,6 @@
  * @type TCall $call
  */
 ?>
-<p>
-    <?php echo $call -> CallerIDNum; ?> -> <?php echo $call -> number; ?>: <?php echo $call -> CallID; ?>, <?php echo date('c',$call -> called); ?>
+<p title="<?php echo $call -> CallID; ?>">
+    <?php echo $call -> CallerIDNum; ?> -> <?php echo $call -> number; ?>, <?php echo $call -> called; ?>
 </p>

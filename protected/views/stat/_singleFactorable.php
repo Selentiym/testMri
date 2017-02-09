@@ -3,7 +3,7 @@
  * @type Enter $model
  */
 $exp = $model -> experiment;
-$tCall = $model -> tCalls;
+$tCalls = $model -> tCalls;
 $gd = $model -> gd;
 $hasGD = $gd instanceof GDCallFactorable;
 $hasExp = $exp instanceof GlobalExperiment;
