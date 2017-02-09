@@ -33,6 +33,7 @@ if (!$str) {
                 <th>ФИО</th>
                 <th>MangoTalker</th>
                 <th>Отчет</th>
+                <th>Запись/Звонок</th>
                 <th>Mobile</th>
                 <th>Цена</th>
             </tr>
