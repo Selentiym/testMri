@@ -160,7 +160,10 @@ class StatController extends Controller {
 			//$client = new ClientPhone();
 		}
 		$s -> i = $phone -> i;
-		$s -> save();
-		//$s ->
+		if ($s -> save()) {
+			echo $s->id;
+		} else {
+			echo "none";
+		}
 	}
 }
