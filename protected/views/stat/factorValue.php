@@ -23,6 +23,22 @@ if (!empty($objs)) {
 if (!$str) {
     echo "Не найдено ни одного захода.";
 } else {
-    echo "<table>$str</table>";
+    ?>
+    <table class='table table-stripped' style='margin-top: 10px'>
+        <thead>
+            <tr>
+                <th>Время захода</th>
+                <th>Фраза</th>
+                <th>Телфин звонки</th>
+                <th>ФИО</th>
+                <th>MangoTalker</th>
+                <th>Отчет</th>
+                <th>Mobile</th>
+                <th>Цена</th>
+            </tr>
+        </thead>
+        <?php echo $str; ?>
+    </table>
+    <?php
 }
 ?>
