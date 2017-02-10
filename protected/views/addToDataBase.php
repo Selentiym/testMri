@@ -1,5 +1,10 @@
-<?php $this -> renderPartial('//navBar',array('user' => User::model() -> findByPk(Yii::app() -> user -> getId()))); ?>
+
 <?php
+/**
+ * @type Controller $this
+ */
+$this -> renderPartial('//navBar',array('user' => User::model() -> findByPk(Yii::app() -> user -> getId())));
+
 	$this -> renderPartial('//_datepicker',['get' => $_GET,"url" => Yii::app() -> baseUrl . '/data/%startTime%/%endTime%']);
 	$this -> renderPartial('//_form_file_upload');
 	$this -> renderPartial('//_form_file_upload_client');
@@ -21,4 +26,5 @@
 	));
 	$this -> renderPartial('//_mentor_list');
 	$this -> renderPartial('//data/_googleDocOptions');
+	$this -> renderPartial('//data/_uploadPrices');
 ?>

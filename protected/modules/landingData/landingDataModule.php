@@ -7,12 +7,22 @@
  */
 class landingDataModule extends CWebModule {
     private static $_connection;
+    /**
+     * @var string which landing default to
+     */
+    public $defaultLandingId;
     //private $_connections;
     public $landings;
+    private $_landing;
     public function init(){
         $this->setImport(array(
             'landingData.models.*',
         ));
+        if ($this -> defaultLandingId) {
+            $this -> _landing = $this->getLanding($this->defaultLandingId);
+        } else {
+            $this -> _landing = Landing::model() -> find();
+        }
     }
     public function createConnection($connectionString, $userName, $tablePrefix){
         /**
@@ -35,6 +45,12 @@ class landingDataModule extends CWebModule {
         }
     }
 
+    /**
+     * @return Landing|bool
+     */
+    public function getDefaultLanding() {
+        return $this -> _landing;
+    }
     /**
      * @param string $id
      * @return Landing|bool

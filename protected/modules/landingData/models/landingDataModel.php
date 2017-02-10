@@ -14,6 +14,7 @@ class landingDataModel extends CActiveRecord {
         if (!$this -> _connection) {
             $this -> _connection = landingDataModule::getConnection();
         }
+        $conn = $this -> _connection;
         return $this -> _connection;
         //$this -> getC -> getModule();
     }

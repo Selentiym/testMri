@@ -133,4 +133,47 @@ class GDCallFactorable extends GDCallDBCached implements iCallFactorable, iFacto
     {
         return parent::model($className);
     }
+
+    /**
+     * @param string $name
+     * @return bool whether the load was successful
+     */
+    public static function loadGooglePrices($name) {
+
+        $reader = new CsvReader($name);
+        $reader -> codeFileEncoding = 'utf-8';
+        $reader -> exportFileEncoding = 'utf-8';
+        //Первая строка не хранит информации
+        $reader -> line();
+        //Сохраняем заголовок
+        $reader -> saveHeader();
+        $time = new DateTime();
+        $time -> setTimestamp($_POST['time']);
+        $time -> setTime(0,0,0);
+        $from = $time -> getTimestamp();
+        $time -> setTime(23,59,59);
+        $to = $time -> getTimestamp();
+        $mod = Yii::app() -> getModule('landingData');
+        /**
+         * @type landingDataModule $mod
+         */
+        $landing = $mod -> getDefaultLanding();
+        while($line = $reader -> line()){
+            $term = trim($line[5]);
+//            echo $term.'<br/>';
+//            $term = 'мозг';
+            $price = str_replace(',','.',$line[6]);
+            $crit = StatCall::giveCriteriaForTimePeriod($from, $to, 'created');
+            $crit -> compare("utm_term", $term, true);
+            $found = $mod -> getEnterData($landing -> textId, $crit);
+            foreach ($found as $e) {
+                if (!$e->price) {
+                    $e->price = (float)$price;
+                }
+                var_dump($e);
+                $e -> save();
+            }
+        }
+        return true;
+    }
 }

@@ -256,7 +256,7 @@ class BaseCall extends UModel
 	 * @arg int from - the time to search from
 	 * @arg int to - the time to search to
 	 * @arg string $attr - attribute the condition is set on
-	 * @return object[CDbCRiteria]
+	 * @return CDbCRiteria
 	 */
 	public static function giveCriteriaForTimePeriod($from = NULL, $to = NULL, $attr="date"){
 		$criteria = new CDbCriteria;

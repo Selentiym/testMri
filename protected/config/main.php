@@ -48,6 +48,7 @@ return array(
 		],
 		'landingData' => [
 			'class' => 'application.modules.landingData.landingDataModule',
+			'defaultLandingId' => 'spbTomograf'
 		]
 	),
 
@@ -181,6 +182,7 @@ return array(
 		),*/
 		'db'=>require_once(__DIR__ . '/database.pss.php'),
 		'mrktClinicsDB'=>require_once(__DIR__ . '/mrkt.database.pss.php'),
+		'spbTomografDB'=>require_once(__DIR__ . '/tomograf.database.pss.php'),
 
 		/* Not default, added by me. To have a simple access way. */
 		'authManager'=>array(

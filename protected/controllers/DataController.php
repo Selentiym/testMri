@@ -9,6 +9,18 @@ class DataController extends Controller {
 
     public function actions(){
         return [
+            'googlePrice' => array(
+                'class' => 'application.controllers.site.FileUploadAction',
+                'returnUrl' => array('site/data'),
+                'report' => function ($name) {
+                    return GDCallFactorable::loadGooglePrices($name);
+                },
+                'serverName' => Yii::app() -> basePath . '/../files/inputGooglePrice.csv',
+                'formFileName' => 'ClientPhoneUpload',
+                'checkAccess' => function () {
+                    return Yii::app() -> user -> checkAccess('admin');
+                }
+            ),
         ];
     }
 
@@ -47,7 +59,7 @@ class DataController extends Controller {
         /**
          * @type landingDataModule $mod
          */
-        $calls = $mod -> getEnterData('mrktClinics', landingDataModule::giveCriteriaForTimePeriod($from, $to));
+        $calls = $mod -> getEnterData($mod -> getDefaultLanding() -> textId, landingDataModule::giveCriteriaForTimePeriod($from, $to));
         $rez = GraphicsByFactors::GoogleDocGraphData($factors['filter'],$calls, $factors['view']);
         echo json_encode(array_values([$rez['header']] + $rez['data']));
         //

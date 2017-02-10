@@ -56,7 +56,7 @@ class CsvReader {
 	 * @arg array array - max length of an element. 0 means that it is not limited.
 	 * @arg string separetor - the csv separator
 	 */
-	public function my_fgetcsv($file, $number, $separator) {
+	public function my_fgetcsv($file, $number, $separator=',') {
 		$array = fgetcsv($file, $number, $separator);
 		if (is_array($array))
 		{

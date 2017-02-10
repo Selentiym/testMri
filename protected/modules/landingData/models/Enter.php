@@ -17,9 +17,11 @@
  * @property TCall[] $tCalls
  * @property GlobalExperiment $experiment
  * @property GDCallFactorable $gd
+ * @property float $price
  */
 class Enter extends landingDataModel implements iTimeFactorable, iNumberFactorable, iFactorable, iCallFactorable, iExperimentFactorable
 {
+	public $price;
 	public $called;
 	/**
 	 * @return string the associated database table name
