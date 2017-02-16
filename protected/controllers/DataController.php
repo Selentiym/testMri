@@ -63,7 +63,8 @@ class DataController extends Controller {
         foreach ($calls as $c) {
             //echo $c -> created.', '.$c -> called.', '.$c -> id.'<br/>\r\n';
         }
-        $rez = GraphicsByFactors::GoogleDocGraphData($factors['filter'],$calls, $factors['view']);
+        //$rez = GraphicsByFactors::GoogleDocGraphData($factors['filter'],$calls, $factors['view']);
+        $rez = GraphicsByFactors::GoogleDocGraphDataVector($factors['filter'],$calls, $factors['view']);
         echo json_encode(array_values([$rez['header']] + $rez['data']));
         //
     }

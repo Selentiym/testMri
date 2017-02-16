@@ -28,7 +28,29 @@ class GraphicsByFactors {
         foreach ($viewFactors as $f) {
             $header[] = $f -> getName();
         }
+        /**
+         * @type aFactorSet $factor
+         */
         $data = $factor -> getResultArrayForGoogleCharts($func, array_fill(0, count($viewFactors), 0));
+        return ['data' => $data, 'header' => $header];
+    }
+    /**
+     * @param iFactor $factor
+     * @param iFactorable[] $data
+     * @param iFactor[] $viewFactors to be displayed
+     * @return mixed[] - array of data and header
+     */
+    public static function GoogleDocGraphDataVector(iFactor $factor, array $data, array $viewFactors){
+        $factor -> factorizeData($data);
+        $header = [];
+        $header[] = $factor -> getName();
+        foreach ($viewFactors as $f) {
+            $header[] = $f -> getName();
+        }
+        /**
+         * @type aFactorSet $factor
+         */
+        $data = $factor -> getArrayForChartByFactors($viewFactors);
         return ['data' => $data, 'header' => $header];
     }
     /**

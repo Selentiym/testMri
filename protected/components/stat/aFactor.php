@@ -105,6 +105,18 @@ abstract class aFactor implements iFactor {
     }
 
     /**
+     * @param iFactorable[] $objects
+     * @return integer
+     */
+    public function applyVector(array $objects) {
+        $rez = 0;
+        foreach ($objects as $obj) {
+            $rez += (int)$this -> apply($obj);
+        }
+        return $rez;
+    }
+
+    /**
      * @param iFactorable $obj
      * @return string
      */

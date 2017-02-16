@@ -30,6 +30,24 @@ trait tGoogleChartForFactoring{
             return $res -> result();
         });
     }
+
+    /**
+     * @param aFactor[] $view
+     * @return array
+     */
+    public function getArrayForChartByFactors(array $view){
+        return $this -> getResultArray(function($res) use ($view){
+            /**
+             * @type iFactorResult $res
+             * @type aFactor $f
+             */
+            $rez = [$res -> getId()];
+            foreach ($view as $f) {
+                $rez[] = $f -> applyVector($res -> giveObjects());
+            }
+            return $rez;
+        });
+    }
     /**
      * @param mixed[] $pattern initial value for array element
      * @param callable $func must return an array that consists of all
