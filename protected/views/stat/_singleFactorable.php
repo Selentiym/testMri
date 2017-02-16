@@ -17,6 +17,15 @@ $status = $hasGD ? callStatusHelper::getClassName($gd -> id_call_type) : 'no_sta
         <?php echo $model -> utm_term; ?>
     </td>
     <td>
+        <?php echo $model -> price ? $model -> price : ' - '; ?>
+    </td>
+    <td>
+        <?php echo $model -> formed; ?>
+    </td>
+    <td>
+        <?php echo $model -> called; ?>
+    </td>
+    <td>
         <?php
             if (!empty($tCalls)) {
                 foreach ($tCalls as $call) {

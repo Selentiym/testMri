@@ -48,7 +48,6 @@ return array(
 		],
 		'landingData' => [
 			'class' => 'application.modules.landingData.landingDataModule',
-			'defaultLandingId' => 'spbTomograf'
 		]
 	),
 

@@ -131,7 +131,7 @@ class SiteController extends Controller
 				'addArgs' => $_POST["smsText"],
 				'redirect' => Yii::app() -> baseUrl.'/activeuserlist'
 			),
-			
+
 			'createUser' => array(
 				'class' => 'application.controllers.site.ModelCreateAction',
 				'modelClass' => 'User',

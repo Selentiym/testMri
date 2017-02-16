@@ -22,7 +22,7 @@ function chartsClickHandler(e){
         console.log("Selected item Id was: " + valueId);
         console.log("Factor config was: ");
         console.log(this.config);
-        location.href = baseUrl + '/factorList?'+this.config + '&from='+this.fromTimeUnix + '&to=' + this.toTimeUnix + '&column=' + column + '&row=' + row + '&valueId=' + valueId;
+        window.open(baseUrl + '/factorList?'+this.config + '&from='+this.fromTimeUnix + '&to=' + this.toTimeUnix + '&column=' + column + '&row=' + row + '&valueId=' + valueId, '_blank');
     }
 }
 

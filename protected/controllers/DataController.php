@@ -60,6 +60,9 @@ class DataController extends Controller {
          * @type landingDataModule $mod
          */
         $calls = $mod -> getEnterData($mod -> getDefaultLanding() -> textId, landingDataModule::giveCriteriaForTimePeriod($from, $to));
+        foreach ($calls as $c) {
+            //echo $c -> created.', '.$c -> called.', '.$c -> id.'<br/>\r\n';
+        }
         $rez = GraphicsByFactors::GoogleDocGraphData($factors['filter'],$calls, $factors['view']);
         echo json_encode(array_values([$rez['header']] + $rez['data']));
         //

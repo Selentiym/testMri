@@ -26,14 +26,16 @@ Yii::app() -> getModule('googleDoc');
 /**
  * @type landingDataModule $mod
  */
-$calls = $mod -> getEnterData('mrktClinics', landingDataModule::giveCriteriaForTimePeriod($from, $to));
+$land = $mod -> getDefaultLanding();
+$calls = $mod -> getEnterData($land -> textId, landingDataModule::giveCriteriaForTimePeriod($from, $to));
+echo $land -> textId;
 /**
  * @type iFactor $factor
  */
 $factor -> factorizeData($calls);
 $factored = $factor -> getResult();
 $toShow = [];
-$toShow[] = $data['valueId'];
+//$toShow[] = $data['valueId'];
 if (!empty($toShow)) {
     foreach ($toShow as $val) {
         $this->renderPartial('/stat/factorValue', [

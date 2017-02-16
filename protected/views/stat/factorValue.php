@@ -29,6 +29,9 @@ if (!$str) {
             <tr>
                 <th>Время захода</th>
                 <th>Фраза</th>
+                <th>Стоимость</th>
+                <th>Форма</th>
+                <th>Звонок</th>
                 <th>Телфин звонки</th>
                 <th>ФИО</th>
                 <th>MangoTalker</th>

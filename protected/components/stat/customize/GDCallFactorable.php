@@ -164,7 +164,9 @@ class GDCallFactorable extends GDCallDBCached implements iCallFactorable, iFacto
 //            $term = 'мозг';
             $price = str_replace(',','.',$line[6]);
             $crit = StatCall::giveCriteriaForTimePeriod($from, $to, 'created');
-            $crit -> compare("utm_term", $term, true);
+            $crit -> compare("utm_term", $term);
+            $crit -> compare("utm_term", trim($line[1]),false, 'OR');
+
             $found = $mod -> getEnterData($landing -> textId, $crit);
             foreach ($found as $e) {
                 if (!$e->price) {

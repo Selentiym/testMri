@@ -12,14 +12,16 @@
  * @property integer $active
  * @property integer $called
  * @property integer $id_gd
+ * @property integer $formed
  *
  * @property phNumber $number
  * @property TCall[] $tCalls
  * @property GlobalExperiment $experiment
  * @property GDCallFactorable $gd
  * @property float $price
+ *
  */
-class Enter extends landingDataModel implements iTimeFactorable, iNumberFactorable, iFactorable, iCallFactorable, iExperimentFactorable
+class Enter extends landingDataModel implements iTimeFactorable, iNumberFactorable, iFactorable, iCallFactorable, iExperimentFactorable, iCalledFactorable
 {
 	public $price;
 	public $called;
@@ -251,5 +253,12 @@ class Enter extends landingDataModel implements iTimeFactorable, iNumberFactorab
 	 */
 	public function getExperiment(){
 		return $this -> experiment;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getCalled(){
+		return (int)$this -> called;
 	}
 }

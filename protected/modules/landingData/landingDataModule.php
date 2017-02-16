@@ -70,6 +70,10 @@ class landingDataModule extends CWebModule {
      * @return Enter[]
      */
     public function getEnterData($id, CDbCriteria $criteria = null){
+        if (!($criteria instanceof CDbCriteria)) {
+            $criteria = new CDbCriteria();
+        }
+        $criteria -> compare('link','utm_medium=cpc',true);
         return $this -> getClassData('Enter', $id, $criteria);
     }
     /**
@@ -103,6 +107,7 @@ class landingDataModule extends CWebModule {
         $land = $this -> getLanding($id);
         $conn = $land -> getDataConnection();
         self::setConnection($conn);
+        //var_dump($conn);
         return $class::model()->findAll($criteria);
     }
 
