@@ -21,8 +21,7 @@
  * @property float $price
  *
  */
-class Enter extends landingDataModel implements iTimeFactorable, iNumberFactorable, iFactorable, iCallFactorable, iExperimentFactorable, iCalledFactorable
-{
+class Enter extends landingDataModel implements iTimeFactorable, iNumberFactorable, iFactorable, iCallFactorable, iExperimentFactorable, iCallTrackerFactorable {
 	public $price;
 	public $called;
 	/**
@@ -260,5 +259,11 @@ class Enter extends landingDataModel implements iTimeFactorable, iNumberFactorab
 	 */
 	public function getCalled(){
 		return (int)$this -> called;
+	}
+	/**
+	 * @return int
+	 */
+	public function getFormed(){
+		return (int)$this -> formed;
 	}
 }

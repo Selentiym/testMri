@@ -72,6 +72,25 @@ function getFactorTypeElement(factor){
     delete factor.config.type;
     return ul;
 }
+function getActionElement(factor) {
+    if (typeof actions == 'undefined') {
+        actions = {};
+    }
+    console.log(actions);
+    var ul = $('<select>',{
+        name: factor.baseName + '[action]'
+    });
+
+    for(var prop in actions){
+        var selected = '';
+        if (factor.config.actions == prop) {
+            selected = ' selected="selected"';
+        }
+        $('<option value="' + prop + '" ' + selected + '>' + actions[prop] + '</option>').appendTo(ul);
+    }
+    delete factor.config.actions;
+    return ul;
+}
 function FactorForm(config){
     this.baseName = config.baseName;
     delete config.baseName;
@@ -86,19 +105,20 @@ function FactorForm(config){
         class:"factor"
     });
     this.element.append(getFactorTypeElement(this));
-    var convParams = {
-        type:"checkbox",
-        value:"1",
-        name:this.baseName + '[conversion]',
-        class:'conversion',
-        title:'Конверсия'
-    };
-    if (this.config.conversion) {
-        convParams.checked = "checked";
-    }
-    delete this.config.conversion;
-    this.conversion = $('<input>',convParams);
-    this.element.append(this.conversion);
+    this.element.append(getActionElement(this));
+    //var convParams = {
+    //    type:"checkbox",
+    //    value:"1",
+    //    name:this.baseName + '[conversion]',
+    //    class:'conversion',
+    //    title:'Конверсия'
+    //};
+    //if (this.config.conversion) {
+    //    convParams.checked = "checked";
+    //}
+    //delete this.config.conversion;
+    //this.conversion = $('<input>',convParams);
+    //this.element.append(this.conversion);
     this.parameterContainer = $("<div>",{
         class:"parameterContainer"
     });

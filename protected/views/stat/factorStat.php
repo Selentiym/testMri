@@ -31,6 +31,7 @@ $cs -> registerScript('typesInit',"
 fromTimeUnix = '".$_GET['from']."';
 toTimeUnix = '".$_GET['to']."';
 types = ".json_encode(FactorForm::getTypes()).";
+actions = ".json_encode(FactorForm::getActions()).";
 ", CClientScript::POS_BEGIN);
 $cs -> registerScript('readyScriptCharts',"
 $('#draw').click(function(){

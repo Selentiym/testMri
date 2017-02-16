@@ -7,15 +7,24 @@
  */
 class FactorForm {
     private static $_types = [
-        9 => 'Count',
-        3 => 'Experiment',
-        2 => 'Time',
-        4 => 'Called',
-        5 => 'Assigned',
-        6 => 'Verified',
-        7 => 'Day',
-        8 => 'Number',
-        1 => 'Parameter',
+        1 => 'Count',
+        2 => 'Experiment',
+        3 => 'Time',
+        4 => 'Lead',
+        5 => 'Called',
+        6 => 'Formed',
+        7 => 'Assigned',
+        8 => 'Verified',
+        9 => 'Day',
+        10 => 'Number',
+        11 => 'Parameter',
+        12 => 'Device',
+    ];
+    private static  $_actions = [
+        '' => ['Выберите действие', null],
+        '+' => ['Плюс', 'Plus'],
+        '/' => ['Делить', 'Divide'],
+        '/!' => ['Делить ненулевые', 'DivideSelective']
     ];
     public static function getTypes(){
         return self::$_types;
@@ -26,11 +35,50 @@ class FactorForm {
     public static function getTypeId($name){
         return array_flip(self::$_types)[$name];
     }
+    public static function getActions(){
+        $rez = [];
+        foreach (self::$_actions as $key => $a) {
+            $rez[$key] = $a[0];
+        }
+        return $rez;
+    }
+    public static function getActionName($id){
+        return self::$_actions[$id][1];
+    }
+    public static function getActionId($name){
+        return array_flip(self::getActions())[$name];
+    }
     public static function createGraphFactorsFromConfig($config){
         $view = [];
+        $savedFactor = null;
+        $action = null;
+        $savedAction = null;
         if (!empty($config['showFactors'])) {
             foreach ($config['showFactors'] as $fConf) {
-                $view[] = self::createFactorFromConfig($fConf);
+                $action = $fConf['action'];
+                unset($fConf['action']);
+                $fact = self::createFactorFromConfig($fConf);
+
+
+                if ($savedAction) {
+                    $className = self::getActionName($savedAction).'FactorSet';
+                    if (!($savedFactor instanceof aFactor)) {
+                        throw new StatisticalException("Saved factor for action '$savedAction' missing!");
+                    } else {
+                        $savedFactor = new $className($savedFactor, $fact);
+                    }
+                } else {
+                    $savedFactor = $fact;
+                }
+
+                if (!$action) {
+                    $view[] = $savedFactor;
+                    $savedFactor = null;
+                }
+                $savedAction = $action;
+            }
+            if ($savedFactor instanceof aFactor) {
+                $view[] = $savedFactor;
             }
         }
         $filterFactor = null;
