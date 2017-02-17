@@ -102,6 +102,7 @@ class FactorForm {
         $conversion = $config['conversion'];
         unset($config['conversion']);
         unset($config['type']);
+        unset($config['action']);
         if (@Yii::autoload($name)) {
             $obj = new $name(current($config),next($config),next($config),next($config));
             $obj -> setParam('conversion',$conversion);
