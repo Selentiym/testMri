@@ -10,4 +10,9 @@ interface iCallTrackerFactorable extends iCalledFactorable {
      * @return int
      */
     public function getFormed();
+
+    /**
+     * @return int
+     */
+    public function getPrice();
 }

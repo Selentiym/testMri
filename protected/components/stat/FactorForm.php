@@ -19,6 +19,7 @@ class FactorForm {
         10 => 'Number',
         11 => 'Parameter',
         12 => 'Device',
+        13 => 'Price',
     ];
     private static  $_actions = [
         '' => ['Выберите действие', null],

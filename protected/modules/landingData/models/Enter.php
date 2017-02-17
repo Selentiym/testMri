@@ -266,4 +266,11 @@ class Enter extends landingDataModel implements iTimeFactorable, iNumberFactorab
 	public function getFormed(){
 		return (int)$this -> formed;
 	}
+
+	/**
+	 * @return float
+	 */
+	public function getPrice() {
+		return (float) $this -> price;
+	}
 }
