@@ -94,4 +94,35 @@ class DataController extends Controller {
 		);
 	}
 	*/
+    public function actionGiveUtmData() {
+        $mod = Yii::app() -> getModule('landingData');
+        /**
+         * @type landingDataModule $mod
+         */
+        $c = BaseCall::giveCriteriaForTimePeriod($_GET['from'],$_GET['to'],'created');
+        $c -> addCondition('utm_term IS NOT NULL');
+        $utms = [];
+        foreach($mod -> getClassData('Enter','spbTomograf',$c) as $e){
+            $t = $e -> utm_term;
+            if (!$utms[$t]) {
+                $utms[$t] = ['clicked' => 0, 'called' => 0, 'formed' => 0];
+            }
+            $utms[$t]['clicked'] ++;
+            $utms[$t]['called'] += $e -> called;
+            $utms[$t]['formed'] += $e -> formed;
+            $utms[$t]['assigned'] += $e -> getAssigned();
+        }
+        $del = ';';
+        $end = PHP_EOL;
+        header("Content-type: text/csv");
+        header("Content-Disposition: attachment; filename=utm_terms.csv");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        $fromE = 'UTF-8';
+        $toE = 'windows-1251';
+        echo mb_convert_encoding("Фраза{$del}Кликов{$del}Звонков{$del}Форм{$del}Записей".$end,$toE,$fromE);
+        foreach($utms as $term => $data){
+            echo mb_convert_encoding(implode($del,[$term, $data['clicked'], $data['called'], $data['formed'], $data['assigned']]).$end,$toE,$fromE);
+        }
+    }
 }

@@ -27,4 +27,6 @@ $this -> renderPartial('//navBar',array('user' => User::model() -> findByPk(Yii:
 	$this -> renderPartial('//_mentor_list');
 	$this -> renderPartial('//data/_googleDocOptions');
 	$this -> renderPartial('//data/_uploadPrices');
+	$this -> renderPartial('//data/_termsCsv');
+
 ?>
