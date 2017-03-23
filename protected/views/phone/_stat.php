@@ -21,6 +21,7 @@ if ($allCalls == 0) {
     $percent = round($assignedCalls/$allCalls*1000)/10;
     $percentVer = round($verifiedCalls/$allCalls*1000)/10;
 }
+$external = $webutils[$model -> number];
 ?>
 <tr>
     <td>
@@ -32,7 +33,7 @@ if ($allCalls == 0) {
             ]
         )); ?>
     </td>
-    <td><?php echo $allCalls; ?></td>
-    <td><?php echo $assignedCalls." (".$percent."%)"; ?></td>
-    <td><?php echo $verifiedCalls." (".$percentVer."%)"; ?></td>
+    <td><?php echo $allCalls. "/" . $external['total']; ?></td>
+    <td><?php echo $assignedCalls." (".$percent."%)"."/".$external['assigned']; ?></td>
+    <td><?php echo $verifiedCalls." (".$percentVer."%)"."/".$external['verified']; ?></td>
 </tr>

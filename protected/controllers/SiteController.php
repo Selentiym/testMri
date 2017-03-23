@@ -552,7 +552,7 @@ class SiteController extends Controller
 			$params = [
 					'dateFrom' => time() - 60*60*24*5,
 					'dateTo' => time(),
-					'key' => OmriPss::pss(),
+					'key' => WebUtils::pss(),
 					'city' => 1
 			];
 			$url = "http://o.mrimaster.ru/api/forms?".http_build_query($params);

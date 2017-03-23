@@ -93,10 +93,14 @@ class GDCall extends Call{
         } else {
             $criteria -> addCondition('j IS NULL');
         }
-        if ($stCall = StatCall::model() -> find($criteria)) {
-            return $stCall;
-        } else {
-            $time = $this -> giveAssignDatePREG();
+        try {
+            if ($stCall = StatCall::model()->find($criteria)) {
+                return $stCall;
+            } else {
+                $time = $this->giveAssignDatePREG();
+                return false;
+            }
+        } catch (CDbException $e) {
             return false;
         }
     }

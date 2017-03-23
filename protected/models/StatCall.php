@@ -47,13 +47,13 @@ class StatCall extends BaseCall {
             $params = [
                 "dateFrom" => $range["from"],
                 "dateTo" => $range["to"],
-                "key" => OmriPss::pss(),
+                "key" => WebUtils::pss(),
                 "city" => 1,
                 "line" => $line,
                 "filterBy" => $tr[$attr]
             ];
-            //$url = "http://web-utils.ru/api/export?".http_build_query($params);
-            $url = 'http://o.mrimaster.ru/api/contacts?'.http_build_query($params);
+            $url = "http://web-utils.ru/api/contacts?".http_build_query($params);
+            //$url = 'http://o.mrimaster.ru/api/contacts?'.http_build_query($params);
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
             $out = curl_exec($curl);
@@ -113,7 +113,7 @@ class StatCall extends BaseCall {
             $params = [
                 'dateFrom' => $from,
                 'dateTo' => $to,
-                'key' => OmriPss::pss(),
+                'key' => WebUtils::pss(),
                 'city' => 1
             ];
             $url = "http://o.mrimaster.ru/api/forms?".http_build_query($params);

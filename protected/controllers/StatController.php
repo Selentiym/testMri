@@ -62,7 +62,7 @@ class StatController extends Controller {
 			$params = array_filter([
 					'dateFrom' => $from,
 					'dateTo' => $to,
-					'key' => OmriPss::pss(),
+					'key' => WebUtils::pss(),
 					'city' => 1
 			]);
 

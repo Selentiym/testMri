@@ -158,7 +158,7 @@ class mCall extends UModel implements iATSCall
 					'dateFrom' => $from,
 					'dateTo' => $to,
 				//'key' => "950fc1f2cef61dcbb9252cdd66a4899e",
-					'key' => OmriPss::pss(),
+					'key' => WebUtils::pss(),
 					'city' => 1
 			]);
 
