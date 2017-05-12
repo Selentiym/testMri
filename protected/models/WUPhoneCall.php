@@ -27,7 +27,7 @@ class WUPhoneCall extends UModel
 	 */
 	public function tableName()
 	{
-		return 'phone_call';
+		return 'wu_phone_call';
 	}
 
 	/**
