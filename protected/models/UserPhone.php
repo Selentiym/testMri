@@ -11,8 +11,11 @@
  * The followings are the available model relations:
  * @property PhoneAssignments[] $phoneAssignments
  */
-class UserPhone extends UModel
-{
+class UserPhone extends UModel {
+	/**
+	 * @var UserPhone[]
+	 */
+	private static $_phones;
 	/**
 	 * @return string the associated database table name
 	 */
@@ -176,6 +179,14 @@ class UserPhone extends UModel
 	public static function givePhoneByNumber($number){
 		//Тут еще можно попробовать обрезать какую-то часть, например во избежание
 		// проблем с +7 или 8
-		return UserPhone::model() -> findByAttributes(array('number' => $number));
+		if (!isset(self::$_phones)) {
+			self::$_phones = [];
+			$models = UserPhone::model() -> findAll();
+			foreach($models as $model){
+				self::$_phones[$model -> number] = $model;
+			}
+		}
+		return self::$_phones[$number];
+//		return UserPhone::model() -> findByAttributes(array('number' => $number));
 	}
 }

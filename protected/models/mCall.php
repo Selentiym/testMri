@@ -150,23 +150,9 @@ class mCall extends UModel implements iATSCall
 	 * @param int|bool $to
 	 */
 	public static function loadDataByApi($from = false, $to = false){
-		if( $curl = curl_init() ) {
-			if (!$from) {
-				$from = current(current(mysqli_fetch_all(mysqli_query(MysqlConnect::getConnection(), 'SELECT UNIX_TIMESTAMP(MAX(`date`)) FROM `tbl_mango_call`'))));
-			}
-			$params = array_filter([
-					'dateFrom' => $from,
-					'dateTo' => $to,
-				//'key' => "950fc1f2cef61dcbb9252cdd66a4899e",
-					'key' => WebUtils::pss(),
-					'city' => 1
-			]);
-
-			$url = 'http://web-utils.ru/api/calls?'.http_build_query($params);
-			echo $url;
-			curl_setopt($curl, CURLOPT_URL, $url);
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
-			$out = curl_exec($curl);
+		$u = new WebUtils('http://web-utils.ru/api/calls');
+		$u -> setParams(['city' => 1]);
+		$u -> setPortionObtainCallback(function($response){
 			$mCalls = json_decode($out);
 			if (!empty($mCalls)) {
 				foreach ($mCalls as $mCall) {
@@ -191,9 +177,52 @@ class mCall extends UModel implements iATSCall
 					}
 				}
 			}
-			curl_close($curl);
-		}
+		});
+		$rez = $u -> getData(time() - 86400*2,time());
 	}
+//	public static function loadDataByApi($from = false, $to = false){
+//		if( $curl = curl_init() ) {
+//			if (!$from) {
+//				$from = current(current(mysqli_fetch_all(mysqli_query(MysqlConnect::getConnection(), 'SELECT UNIX_TIMESTAMP(MAX(`date`)) FROM `tbl_mango_call`'))));
+//			}
+//			$params = array_filter([
+//					'dateFrom' => $from,
+//					'dateTo' => $to,
+//					'key' => WebUtils::pss(),
+//					'city' => 1
+//			]);
+//
+//			$url = 'http://web-utils.ru/api/calls?'.http_build_query($params);
+//			curl_setopt($curl, CURLOPT_URL, $url);
+//			curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
+//			$out = curl_exec($curl);
+//			$mCalls = json_decode($out);
+//			if (!empty($mCalls)) {
+//				foreach ($mCalls as $mCall) {
+//					//Добавляем только если не найдено
+//					if (!(mCall::model()->findByPk($mCall->id))) {
+//						$b = new mCall();
+//						$b->id = $mCall->id;
+//						$b->date = $mCall->date;
+//						$b->line = $mCall->line;
+//						$b->fromPhone = $mCall->fromPhone;
+//						$b->toPhone = $mCall->toPhone;
+//						$b->direction = $mCall->direction;
+//						$b->status = $mCall->status;
+//						$b->duration = $mCall->duration;
+//						$b->type = $mCall->type;
+//						if ($ph = UserPhone::givePhoneByNumber($b->line)) {
+//							$b->i = $ph->i;
+//						}
+//						if (!$b->save()) {
+//							$err = $b->getErrors();
+//						}
+//					}
+//				}
+//			}
+//			curl_close($curl);
+//		}
+//	}
 
 	/**
 	 * @param $from

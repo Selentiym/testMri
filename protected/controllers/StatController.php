@@ -133,13 +133,20 @@ class StatController extends Controller {
 		fclose($handler);
 	}
 	public function actionCheck(){
-		$int = DateInterval::createFromDateString("- 1 month");
-		$time = new DateTime();
-		$time -> add($int);
-		$timeEnd = $time -> getTimestamp();
-		$timeStart = $time -> add($int) -> getTimestamp();
-		//echo $time;
-		mCall::loadDataByApi($timeStart, $timeEnd);
+		$u = new WebUtils('http://web-utils.ru/api/calls');
+		$u -> setParams(['city' => 1]);
+		$u -> setPortionObtainCallback(function($response){
+			return json_decode($response);
+		});
+		$rez = $u -> getData(time() - 86400*2,time());
+		var_dump($rez);
+//		$int = DateInterval::createFromDateString("- 1 month");
+//		$time = new DateTime();
+//		$time -> add($int);
+//		$timeEnd = $time -> getTimestamp();
+//		$timeStart = $time -> add($int) -> getTimestamp();
+//		//echo $time;
+//		mCall::loadDataByApi($timeStart, $timeEnd);
 	}
 	public function actionFormAssign(){
 		//
@@ -174,6 +181,55 @@ class StatController extends Controller {
 			echo $s->id;
 		} else {
 			echo "none";
+		}
+	}
+
+	public function actionLoadCallsFromWebutilsTable(){
+		$criteria = new CDbCriteria();
+		$criteria -> addCondition('LENGTH(line) > 1');
+		$criteria -> addCondition('LENGTH(from_phone) > 1');
+//		$criteria -> limit = 100;
+		$mCalls = WUPhoneCall::model() -> findAll($criteria);
+		$count = 0;
+		$noLine = 0;
+		if (!empty($mCalls)) {
+			foreach ($mCalls as $mCall) {
+				$count ++;
+				//Добавляем только если не найдено
+				if (!(mCall::model()->findByPk($mCall->id))) {
+					if (!$mCall -> line) {
+						$noLine ++;
+						echo "no line".$noLine."<br/>";
+
+					}
+					$b = new mCall();
+					$b->id = $mCall->id;
+					$b->line = $mCall->line;
+					$b->fromPhone = $mCall->from_phone;
+					$b->toPhone = $mCall->to_phone;
+					$b->direction = $mCall->direction;
+					$b->status = $mCall->status;
+					$b->duration = $mCall->duration;
+					$b->type = $mCall->type;
+					$b->date = $mCall->date;
+					if ($ph = UserPhone::givePhoneByNumber($b->line)) {
+						$b->i = $ph->i;
+					}
+					if (!$b -> save()) {
+						$err = $b -> getErrors();
+						var_dump($err);
+						$errNum ++;
+						echo $errNum;
+					} else {
+						$saved ++;
+					}
+				} else {
+					$inDb++;
+					echo "Found in DB, id ".$mCall -> id.', num '.$inDb.'<br/>';
+				}
+			}
+			echo "<br/>Saved $saved <br/>Errors: $errNum <br/> In database: $inDb <br/> ran into $count <br/> no line: $noLine";
+
 		}
 	}
 }

@@ -89,6 +89,7 @@ return array(
 				
 				'print' => 'site/printDirections',
 				'print/<arg:\w+>' => 'site/printDirections',
+				'statCont/<action:\w+>' => 'stat/<action>',
 				'stat/check' => 'stat/check',
 				'stat/<action:(full|showDiff|loadStatistics|refreshData|LoadStatisticsDaily|mangoCalls|loadMango)>/<from:\d*>/<to:\d*>'=>'stat/<action>',
 				'stat/<action:(full|showDiff|loadStatistics|refreshData|LoadStatisticsDaily|mangoCalls|loadMango)>/<to:\d*>'=>'stat/<action>',
