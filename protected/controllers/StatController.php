@@ -108,17 +108,29 @@ class StatController extends Controller {
 		}
 	}
 
+	public function actionLoadMangoCallsByDay(){
+		if (!($day=$_GET['day'])) {
+			$to = time();
+		} else {
+			$to = strtotime($_GET['day'].' 12:00:00');
+		}
+		$from = $to - 10;
+		self::log("Loading mango calls data from $from to $to which is ".date('c', $from).' and '.date('c', $to));
+		mCall::loadDataByApi($from, $to);
+	}
+
 	/**
 	 * Ежеденевная загрузка новых звонков. Смотрит два дня на всякий случай.
 	 */
-	public function actionLoadStatisticsDaily() {
+	public function actionLoadGoogleDocDaily() {
 		ob_start();
-		GDCall::importFromGoogleDoc(time() - 24*68*60,true);
+		$fromTime = time() - 24*68*60;
+		GDCall::importFromGoogleDoc($fromTime,true);
 		GDCall::importFromGoogleDoc(time(),true);
 		$out = ob_get_contents();
 		ob_end_clean();
 
-		self::log("LoadStatisticsDaily".PHP_EOL.$out);
+		self::log("LoadGoogleDocDaily".PHP_EOL.$out);
 	}
 	public function actionRefreshData($from = null,$to = null) {
 		StatCall::refreshInPeriod($from, $to);

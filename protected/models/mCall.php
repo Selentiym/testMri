@@ -148,12 +148,14 @@ class mCall extends UModel implements iATSCall
 	 * @param int|bool $from unix timestamp. Will be replaced by the last loaded date if
 	 * not explicitly specified
 	 * @param int|bool $to
+	 * @return array[] saving errors that occurred
 	 */
 	public static function loadDataByApi($from = false, $to = false){
 		$u = new WebUtils('http://web-utils.ru/api/calls');
 		$u -> setParams(['city' => 1]);
 		$u -> setPortionObtainCallback(function($response){
-			$mCalls = json_decode($out);
+			$mCalls = json_decode($response);
+			$ret = [];
 			if (!empty($mCalls)) {
 				foreach ($mCalls as $mCall) {
 					//Добавляем только если не найдено
@@ -173,12 +175,15 @@ class mCall extends UModel implements iATSCall
 						}
 						if (!$b->save()) {
 							$err = $b->getErrors();
+							$ret[$mCall -> id] = $err;
 						}
 					}
 				}
 			}
+			return $ret;
 		});
-		$rez = $u -> getData(time() - 86400*2,time());
+		$rez = $u -> getData($from,$to);
+		return $rez;
 	}
 //	public static function loadDataByApi($from = false, $to = false){
 //		if( $curl = curl_init() ) {
