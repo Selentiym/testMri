@@ -36,7 +36,8 @@ class DataController extends Controller {
         $dateTime=new DateTime(date('Y-m-1 00:00:00',$timestamp));
         $dateTimeEnd=new DateTime(date('Y-m-31 23:59:59',$timestamp));
         //$dateTimeEnd = clone $dateTime;
-        mCall::loadDataByApi($dateTime -> getTimestamp(), $dateTimeEnd -> getTimestamp());
+//        Не нужно, тк перешли на подневную загрузку
+//        mCall::loadDataByApi($dateTime -> getTimestamp(), $dateTimeEnd -> getTimestamp());
         ob_start();
         foreach ($f -> ScanGoogle([], $timestamp) as $entry){
             $gd = $f -> buildByEntry($entry);

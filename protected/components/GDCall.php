@@ -107,11 +107,12 @@ class GDCall extends Call{
     public static function importFromGoogleDoc($timestamp, $dayCond = false){
         $api = GoogleDocApiHelper::getLastInstance();
         //Чтобы потом не было проблем с ненайденными телефонами.
-        $dateTime=new DateTime('now');
-        $dateTimeEnd=new DateTime('now');
-        $dateTimeEnd -> setTimestamp(time() - 86400*3);
+        //Закомментировано, тк перешли на подневную загрузку, которая загружается раньше
+//        $dateTime=new DateTime('now');
+//        $dateTimeEnd=new DateTime('now');
+//        $dateTimeEnd -> setTimestamp(time() - 86400*3);
         //$dateTimeEnd = clone $dateTime;
-        mCall::loadDataByApi($dateTime -> getTimestamp(), $dateTimeEnd -> getTimestamp());
+//        mCall::loadDataByApi($dateTime -> getTimestamp(), $dateTimeEnd -> getTimestamp());
         //mCall::import($timestamp);
         if ($api -> success) {
             $date = getdate($timestamp);

@@ -145,20 +145,16 @@ class StatController extends Controller {
 		fclose($handler);
 	}
 	public function actionCheck(){
-		$u = new WebUtils('http://web-utils.ru/api/calls');
-		$u -> setParams(['city' => 1]);
-		$u -> setPortionObtainCallback(function($response){
-			return json_decode($response);
-		});
-		$rez = $u -> getData(time() - 86400*2,time());
-		var_dump($rez);
-//		$int = DateInterval::createFromDateString("- 1 month");
-//		$time = new DateTime();
-//		$time -> add($int);
-//		$timeEnd = $time -> getTimestamp();
-//		$timeStart = $time -> add($int) -> getTimestamp();
-//		//echo $time;
-//		mCall::loadDataByApi($timeStart, $timeEnd);
+//		$u = new WebUtils('http://web-utils.ru/api/calls');
+//		$u -> setParams(['city' => 1]);
+//		$u -> setPortionObtainCallback(function($response){
+//			return json_decode($response);
+//		});
+//		$rez = $u -> getData(time() - 86400*2,time());
+//		var_dump($rez);
+
+//		$api -> ;
+		GDCall::importFromGoogleDoc(time() - 86400*40, false);
 	}
 	public function actionFormAssign(){
 		//
