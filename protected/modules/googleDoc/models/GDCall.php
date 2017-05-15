@@ -60,7 +60,7 @@ class GDCall extends aGDCall{
     private $_callTime;
     private $_dateTime;
 
-    const DATESTRING_KEY="Дата";
+    const DATESTRING_KEY="дата";
 
     const verified = 'verified';
     const missed = 'missed';
@@ -197,7 +197,8 @@ class GDCall extends aGDCall{
     public function getCallTime(){
         if (!$this -> _callTime) {
             if (!$this -> calledDate) {
-                $this->_callTime = strtotime("12:00:00 " . $this->_data[self::DATESTRING_KEY] . '.' . $this->getYear());
+                $str = $this->_data[self::DATESTRING_KEY] . '.' . $this->getYear() . " 12:00:00";
+                $this->_callTime = strtotime($str);
             } else {
                 $this->_callTime = strtotime($this -> calledDate);
             }
