@@ -154,7 +154,16 @@ class StatController extends Controller {
 //		var_dump($rez);
 
 //		$api -> ;
-		GDCall::importFromGoogleDoc(time() - 86400*40, false);
+		$mod = Yii::app() -> getModule('landingData');
+		/**
+		 * @type landingDataModule $mod
+		 */
+		$crit = new CDbCriteria();
+		$crit -> compare('id', 2559);
+		$e = $mod -> getEnterData('spbTomograf', $crit);
+		var_dump($e -> attributes);
+		var_dump($e -> gd);
+		//GDCall::importFromGoogleDoc(time() - 86400*40, false);
 	}
 	public function actionFormAssign(){
 		//

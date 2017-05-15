@@ -73,7 +73,8 @@ class landingDataModule extends CWebModule {
         if (!($criteria instanceof CDbCriteria)) {
             $criteria = new CDbCriteria();
         }
-        $criteria -> compare('link','utm_medium=cpc',true);
+//        $criteria -> compare('link','utm_medium=cpc',true);
+        $criteria -> addCondition("`link` like '%utm_medium=cpc%' OR called > 0 OR formed > 0");
         return $this -> getClassData('Enter', $id, $criteria);
     }
     /**
