@@ -160,9 +160,11 @@ class StatController extends Controller {
 		 * @type landingDataModule $mod
 		 * @type GDCallFactorable $gd
 		 */
-		$gd = GDCallFactorable::model() -> findByPk(309);
+		$gd = GDCallFactorable::model() -> findByPk(144);
+		$t1 = $gd -> fio;
+		$t2 = $gd -> mangoTalker;
 		$gd -> lookForIAttribute();
-		$tCall = $gd -> getMinTCall();
+		$tCall = $gd -> getTCall('max');
 		//$attrs = $tCall -> attributes;
 		if (($tCall)&&($gd -> i == $tCall -> getLandingId())&&($gd -> i)) {
 			$gd -> id_enter = $tCall -> id_enter;

@@ -43,6 +43,8 @@ class GDCallFactorable extends GDCallDBCached implements iCallFactorable, iFacto
         $maxCall = $maxTCall;
         if (($maxTCall)&&($mCall)) {
             $delta = $maxTCall -> getCallTime() - $mCall -> getCallTime();
+            $t1 = date('c', $maxTCall -> getCallTime());
+            $t2 = date('c', $mCall -> getCallTime());
             if ($delta > -30) {
                 $maxCall = $maxTCall;
             } else {
@@ -62,7 +64,7 @@ class GDCallFactorable extends GDCallDBCached implements iCallFactorable, iFacto
     }
 
     /**
-     * @param string|min|max $mod
+     * @param string $m has to be min or max
      * @return mixed|null|TCall
      */
     public function getTCall($m = 'min') {
@@ -73,7 +75,11 @@ class GDCallFactorable extends GDCallDBCached implements iCallFactorable, iFacto
             $mod = Yii::app()->getModule('landingData');
             $cr = new CDbCriteria();
             $cr->compare('CallerIDNum', $this->mangoTalker, true);
-            $cr->order = 'called ASC';
+            if ($m=='min') {
+                $cr->order = 'called ASC';
+            } elseif($m=='max') {
+                $cr->order = 'called DESC';
+            }
             //Получили все звонки со всех лендингов
             $tCalls = $mod->iterateLandingsForClassData('TCall', $cr);
             //Нашли самый ранний из звонков по лендингам
@@ -84,7 +90,14 @@ class GDCallFactorable extends GDCallDBCached implements iCallFactorable, iFacto
                 if (!empty($calls)) {
                     $tCall = current($calls);
                     $time = $tCall->getCallTime();
-                    if ((($time < $s)&&($mod=='min')) || (($time > $s)&&($mod=='max')) || (!$sTCall)) {
+                    if ($m == 'min') {
+                        $change = ($time < $s);
+                    }
+                    if ($m == 'max') {
+                        $change = ($time > $s);
+                    }
+                    $change |= (!$sTCall);
+                    if ($change) {
                         $s = $time;
                         $sTCall = $tCall;
                         $sLanding = $landingId;

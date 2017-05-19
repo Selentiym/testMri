@@ -43,8 +43,8 @@ return array(
 				return new GDCallFactorableFactory();
 			},
 			'config' => require_once(__DIR__.'/googleDoc.config.pss.php'),
-			//'spreadsheet' => 'Copy of СТАТИСТИКА СПб'
-			'spreadsheet' => 'СТАТИСТИКА СПб'
+			'spreadsheet' => 'Copy of СТАТИСТИКА СПб'
+//			'spreadsheet' => 'СТАТИСТИКА СПб'
 		],
 		'landingData' => [
 			'class' => 'application.modules.landingData.landingDataModule',
