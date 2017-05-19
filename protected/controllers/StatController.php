@@ -155,14 +155,19 @@ class StatController extends Controller {
 
 //		$api -> ;
 		$mod = Yii::app() -> getModule('landingData');
+		$googleMod = Yii::app() -> getModule('googleDoc');
 		/**
 		 * @type landingDataModule $mod
+		 * @type GDCallFactorable $gd
 		 */
-		$crit = new CDbCriteria();
-		$crit -> compare('id', 2559);
-		$e = $mod -> getEnterData('spbTomograf', $crit);
-		var_dump($e -> attributes);
-		var_dump($e -> gd);
+		$gd = GDCallFactorable::model() -> findByPk(309);
+		$gd -> lookForIAttribute();
+		$tCall = $gd -> getMinTCall();
+		//$attrs = $tCall -> attributes;
+		if (($tCall)&&($gd -> i == $tCall -> getLandingId())&&($gd -> i)) {
+			$gd -> id_enter = $tCall -> id_enter;
+			$test = $gd -> id_enter;
+		}
 		//GDCall::importFromGoogleDoc(time() - 86400*40, false);
 	}
 	public function actionFormAssign(){

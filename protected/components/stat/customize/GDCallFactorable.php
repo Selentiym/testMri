@@ -9,7 +9,7 @@ class GDCallFactorable extends GDCallDBCached implements iCallFactorable, iFacto
     /**
      * @var TCall
      */
-    private $_minTCall;
+    private $_cachedTCall;
     public function initialize(Google\Spreadsheet\ListEntry $entry, aGDCallFactory $factory) {
         parent::initialize($entry, $factory);
         //Определили линию звонка
@@ -18,7 +18,7 @@ class GDCallFactorable extends GDCallDBCached implements iCallFactorable, iFacto
         //Если нам удалось определить, что звонок с лендинг, то сохраняем связь.
         //Не сохраняем эту связь в случае, если звонок прицепляется к любой другой линии.
         //Если звонок без линии, то он нас тоже не интересует.
-        $tCall = $this -> getMinTCall();
+        $tCall = $this -> getTCall('max');
         //$attrs = $tCall -> attributes;
         if (($tCall)&&($this -> i == $tCall -> getLandingId())&&($this -> i)) {
             $this -> id_enter = $tCall -> id_enter;
@@ -36,36 +36,37 @@ class GDCallFactorable extends GDCallDBCached implements iCallFactorable, iFacto
         } elseif ($len == 10) {
             $this -> mangoTalker = '7'.$this -> mangoTalker;
         }
-        //Получили самый ранний манго звонок по этому номеру.
-        $mCall = mCall::model() -> findByAttributes(array('fromPhone' => $this -> mangoTalker), ['order' => 'date ASC']);
-        //echo "<pre>";
-        //var_dump($mCall);
-        $minTCall = $this -> getMinTCall();
-        //var_dump($minTCall);
-        //echo "</pre>";
-        //Теперь выбираем что раньше: с лендинга или с манго.
-        $minCall = $minTCall;
-        if (($minTCall)&&($mCall)) {
-            $delta = $minTCall -> getCallTime() - $mCall -> getCallTime();
-            if ($delta < 30) {
-                $minCall = $minTCall;
+        //Получили самый поздний манго звонок по этому номеру.
+        $mCall = mCall::model() -> findByAttributes(array('fromPhone' => $this -> mangoTalker), ['order' => 'date DESC']);
+        $maxTCall = $this -> getTCall('max');
+        //Теперь выбираем что позже: с лендинга или с манго.
+        $maxCall = $maxTCall;
+        if (($maxTCall)&&($mCall)) {
+            $delta = $maxTCall -> getCallTime() - $mCall -> getCallTime();
+            if ($delta > -30) {
+                $maxCall = $maxTCall;
             } else {
-                $minCall = $mCall;
+                $maxCall = $mCall;
             }
         } elseif($mCall) {
-            $minCall = $mCall;
-        } elseif($minTCall) {
-            $minCall = $minTCall;
+            $maxCall = $mCall;
+        } elseif($maxTCall) {
+            $maxCall = $maxTCall;
         } else {
 
         }
-        if ($minCall) {
-            $this -> i = $minCall -> getLineI();
+        if ($maxCall) {
+            $this -> i = $maxCall -> getLineI();
         }
         return $this -> i;
     }
-    public function getMinTCall() {
-        if (!$this -> _minTCall) {
+
+    /**
+     * @param string|min|max $mod
+     * @return mixed|null|TCall
+     */
+    public function getTCall($m = 'min') {
+        if (!$this -> _cachedTCall[$m]) {
             /**
              * @type landingDataModule $mod
              */
@@ -76,26 +77,26 @@ class GDCallFactorable extends GDCallDBCached implements iCallFactorable, iFacto
             //Получили все звонки со всех лендингов
             $tCalls = $mod->iterateLandingsForClassData('TCall', $cr);
             //Нашли самый ранний из звонков по лендингам
-            $min = null;
-            $minTCall = null;
-            $minLanding = null;
+            $s = null;
+            $sTCall = null;
+            $sLanding = null;
             foreach ($tCalls as $landingId => $calls) {
                 if (!empty($calls)) {
                     $tCall = current($calls);
                     $time = $tCall->getCallTime();
-                    if (($time < $min) || (!$minTCall)) {
-                        $min = $time;
-                        $minTCall = $tCall;
-                        $minLanding = $landingId;
+                    if ((($time < $s)&&($mod=='min')) || (($time > $s)&&($mod=='max')) || (!$sTCall)) {
+                        $s = $time;
+                        $sTCall = $tCall;
+                        $sLanding = $landingId;
                     }
                 }
             }
-            if ($minTCall) {
-                $minTCall->setLanding($minLanding);
+            if ($sTCall) {
+                $sTCall->setLanding($sLanding);
             }
-            $this -> _minTCall = $minTCall;
+            $this -> _cachedTCall[$m] = $sTCall;
         }
-        return $this -> _minTCall;
+        return $this -> _cachedTCall[$m];
     }
     /**
      * @return bool whether the call led to an assignment
