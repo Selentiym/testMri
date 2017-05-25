@@ -150,9 +150,10 @@ class GDCallFactorable extends GDCallDBCached implements iCallFactorable, iFacto
 
     /**
      * @param string $name
+     * @param int $time
      * @return bool whether the load was successful
      */
-    public static function loadGooglePrices($name) {
+    public static function loadGooglePrices($name, $fileTime) {
 
         $reader = new CsvReader($name);
         $reader -> codeFileEncoding = 'utf-8';
@@ -162,7 +163,7 @@ class GDCallFactorable extends GDCallDBCached implements iCallFactorable, iFacto
         //Сохраняем заголовок
         $reader -> saveHeader();
         $time = new DateTime();
-        $time -> setTimestamp($_POST['time']);
+        $time -> setTimestamp($fileTime);
         $time -> setTime(0,0,0);
         $from = $time -> getTimestamp();
         $time -> setTime(23,59,59);
@@ -178,15 +179,17 @@ class GDCallFactorable extends GDCallDBCached implements iCallFactorable, iFacto
 //            $term = 'мозг';
             $price = str_replace(',','.',$line[6]);
             $crit = StatCall::giveCriteriaForTimePeriod($from, $to, 'created');
-            $crit -> compare("utm_term", $term);
-            $crit -> compare("utm_term", trim($line[1]),false, 'OR');
+            $crit -> addCondition("( utm_term='$term' OR utm_term='".trim($line[1])."' )");
+//            $crit -> compare("utm_term", $term);
+//            $crit -> compare("utm_term", trim($line[1]),false, 'OR');
 
             $found = $mod -> getEnterData($landing -> textId, $crit);
             foreach ($found as $e) {
                 if (!$e->price) {
                     $e->price = (float)$price;
+                    echo $e->id." saved price ".$e->price." by term ".$e->utm_term."<br/>";
                 }
-                var_dump($e);
+//                var_dump($e);
                 $e -> save();
             }
         }

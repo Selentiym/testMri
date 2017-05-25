@@ -11,9 +11,15 @@ class DataController extends Controller {
         return [
             'googlePrice' => array(
                 'class' => 'application.controllers.site.FileUploadAction',
-                'returnUrl' => array('site/data'),
+                //'returnUrl' => array('site/data'),
+                'returnUrl' => Yii::app() -> createUrl('site/data',['from' => $_POST['time'] + 86400, 'to' => $_POST['time'] + 86400*2]),
                 'report' => function ($name) {
-                    return GDCallFactorable::loadGooglePrices($name);
+                    ob_start();
+                    $status = GDCallFactorable::loadGooglePrices($name, $_POST['time']);
+                    $out = ob_get_contents();
+                    new CustomFlash('success','Enter','PriceUpload',$out,true);
+                    ob_end_clean();
+                    return $status;
                 },
                 'serverName' => Yii::app() -> basePath . '/../files/inputGooglePrice.csv',
                 'formFileName' => 'ClientPhoneUpload',
@@ -22,6 +28,31 @@ class DataController extends Controller {
                 }
             ),
         ];
+    }
+
+    public function actionLoadGoogleFromFolder(){
+        $workFile = function ($name, $time) {
+            $_POST['time'] = $time;
+            ob_start();
+            $status = GDCallFactorable::loadGooglePrices($name, $time);
+            $out = ob_get_contents();
+            //new CustomFlash('success','Enter','PriceUpload',$out,true);
+            ob_end_clean();
+            return $status;
+        };
+        $dir = __DIR__.'/../../../prices/';
+        foreach(scandir($dir) as $file){
+            if (!is_dir($file)) {
+                $date = str_replace('.csv', '', $file).'_2017 12:00:00';
+                $date = str_replace('_','.', $date);
+                $time = strtotime($date);
+                echo "$file ".date('c',$time).'<br/>';
+                if ($time < 10000) {
+                    continue;
+                }
+                GDCallFactorable::loadGooglePrices($dir.$file, $time);
+            }
+        }
     }
 
     public function beforeAction(){
