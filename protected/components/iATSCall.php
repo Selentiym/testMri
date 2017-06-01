@@ -16,4 +16,9 @@ interface iATSCall {
      * @return int|string line identification(not just table id!) which this call corresponds to
      */
     public function getLineI($external = null);
+
+    /**
+     * @return int
+     */
+    public function getEnterId();
 }

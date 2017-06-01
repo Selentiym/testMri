@@ -12,7 +12,7 @@
  * @property string $lineNumber
  * @property string $numberFormatted
  */
-class FormSubmit extends UModel
+class FormSubmit extends UModel implements iATSCall
 {
 	/**
 	 * @return string the associated database table name
@@ -102,5 +102,51 @@ class FormSubmit extends UModel
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	/**
+	 * @return int UNIX timestamp of the call
+	 */
+	public function getCallTime() {
+		return strtotime($this -> date);
+	}
+
+	/**
+	 * @param mixed $external
+	 * @return int|string line identification(not just table id!) which this call corresponds to
+	 */
+	public function getLineI($external = null) {
+		return $this -> i;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getEnterId() {
+		$mod = Yii::app() -> getModule('landingData');
+		/**
+		 * @type landingDataModule $mod
+		 */
+		$crit = new CDbCriteria();
+		$crit -> compare('id_submit', $this -> id);
+		$rez = $mod -> iterateLandingsForClassData('Enter', $crit);
+		$save = -1;
+		$id = null;
+		foreach ($rez as $landing => $enters) {
+			$enter = current($enters);
+			if (!$enter instanceof Enter) {
+				continue;
+			}
+			/**
+			 * @type Enter $enter
+			 */
+			//
+			$time = $enter -> getDateTime() -> getTimestamp();
+			if ($time > $save) {
+				$id = $enter -> id;
+				$save = $time;
+			}
+		}
+		return $id;
 	}
 }

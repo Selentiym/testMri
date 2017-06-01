@@ -248,7 +248,9 @@ class mCall extends UModel implements iATSCall
 	 * @return int UNIX timestamp of the call
 	 */
 	public function getCallTime() {
-		return strtotime($this -> date);
+		//Задержка на всякий случай, тк звонок Телфин также появялется и в манго, а
+		// необходимо их разделять
+		return strtotime($this -> date) - 30;
 	}
 
 	/**
@@ -257,5 +259,25 @@ class mCall extends UModel implements iATSCall
 	 */
 	public function getLineI($external = null) {
 		return $this -> i;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getTime() {
+		return strtotime($this -> date);
+	}
+	/**
+	 * @return string
+	 */
+	public function getLine(){
+		return '';
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getEnterId() {
+		return null;
 	}
 }

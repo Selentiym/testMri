@@ -522,66 +522,8 @@ class SiteController extends Controller
 		echo "time:".(microtime(true) - $t)."<br/>";
 	}
 	public function actionCheck () {
-		var_dump($_GET);
-		//$was = GDCallFactorable::model() -> findByPk(10609);
-		/*$mod = Yii::app() -> getModule('googleDoc');
-		$check = new GDCallFactorable();
-		$check -> id = 10609;
-		$check -> research_type = 'check!';
-		$check -> setIsNewRecord(false);
-		$check -> save(['research_type']);*/
-
-
-		//$this -> render('//stat/factorStat');
-
-
-
-		/*$api = GoogleDocApiHelper::getLastInstance();
-
-		$call = StatCall::model() -> findByPk(5222);
-		echo $call -> external_id;
-		$entry = $call -> findGDByLink();
-		var_dump($entry);//*/
-
-		//var_dump(\Google\Spreadsheet\ListEntry::getEntryByUrl('https://spreadsheets.google.com/feeds/list/1CN1K4fG2nsrUlj5GOEfs4ncPU5gUT0pXNjuryQDJNFk/od6/private/full/cokwr'));
-		//https://spreadsheets.google.com/feeds/list/1CN1K4fG2nsrUlj5GOEfs4ncPU5gUT0pXNjuryQDJNFk/od6/private/full/cokwr
-		/*$api -> setWorkArea('check', date("F o",time()));
-		$data = $api->giveData();
-		var_dump($data -> getEntries());//*/
-		/*if( $curl = curl_init() ) {
-			$params = [
-					'dateFrom' => time() - 60*60*24*5,
-					'dateTo' => time(),
-					'key' => WebUtils::pss(),
-					'city' => 1
-			];
-			$url = "http://o.mrimaster.ru/api/forms?".http_build_query($params);
-			curl_setopt($curl, CURLOPT_URL, $url);
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-			$out = curl_exec($curl);
-			$calls = json_decode($out);
-			foreach ($calls as $call) {
-				$stCall = new StatCall();
-				$stCall -> type = 'form';
-				$stCall -> date = new CDbExpression('FROM_UNIXTIME(\''.strtotime($call -> dateCreated).'\')');
-				$stCall -> report = $call -> description;
-				$stCall -> fio = $call -> name;
-				$stCall -> number = $call -> phone;
-				$stCall -> i = $call -> pid;
-				$criteria = new CDbCriteria();
-				$criteria -> compare('i', $stCall -> i);
-				$criteria -> compare('number', $stCall -> number);
-				$criteria -> compare('report', $stCall -> report);
-				$criteria -> addCondition('date = FROM_UNIXTIME('.strtotime($call -> dateCreated).')');
-				$rec = StatCall::model() -> find($criteria);
-				if (!$rec) {
-					if (!$stCall->save()) {
-						var_dump($stCall->getErrors());
-					}
-				}
-			}
-			curl_close($curl);
-		}*/
+		$subm = FormSubmit::model() -> findByPk(2799);
+		var_dump($subm -> getEnterId());
 	}
 	/*public function actionDownloadClinicsList(){
 		$reader = new CsvReader(Yii::app() -> basePath.'/../files/tests_clinics.csv');

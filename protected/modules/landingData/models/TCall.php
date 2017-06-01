@@ -168,4 +168,11 @@ class TCall extends landingDataModel implements iATSCall{
 	public function getLandingId(){
 		return $this -> landingId;
 	}
+
+	/**
+	 * @return int
+	 */
+	public function getEnterId() {
+		return $this -> id_enter;
+	}
 }

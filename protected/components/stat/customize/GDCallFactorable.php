@@ -7,6 +7,10 @@
  */
 class GDCallFactorable extends GDCallDBCached implements iCallFactorable, iFactorable, iTimeFactorable{
     /**
+     * @var iATSCall
+     */
+    private $_lineDefiner;
+    /**
      * @var TCall
      */
     private $_cachedTCall;
@@ -15,13 +19,9 @@ class GDCallFactorable extends GDCallDBCached implements iCallFactorable, iFacto
         //Определили линию звонка
         $this -> lookForIAttribute();
         //$i = $this -> i;
-        //Если нам удалось определить, что звонок с лендинг, то сохраняем связь.
-        //Не сохраняем эту связь в случае, если звонок прицепляется к любой другой линии.
-        //Если звонок без линии, то он нас тоже не интересует.
-        $tCall = $this -> getTCall('max');
-        //$attrs = $tCall -> attributes;
-        if (($tCall)&&($this -> i == $tCall -> getLandingId())&&($this -> i)) {
-            $this -> id_enter = $tCall -> id_enter;
+        $def = $this -> getLineDefiner();
+        if ($def instanceof iATSCall) {
+            $this->id_enter = $def -> getEnterId();
         }
     }
 
@@ -30,37 +30,50 @@ class GDCallFactorable extends GDCallDBCached implements iCallFactorable, iFacto
      */
     public function lookForIAttribute() {
 
-        $len = mb_strlen($this -> mangoTalker, "utf-8");
-        if ($len == 7 ) {
-            $this -> mangoTalker = '7812'.$this -> mangoTalker;
-        } elseif ($len == 10) {
-            $this -> mangoTalker = '7'.$this -> mangoTalker;
-        }
-        //Получили самый поздний манго звонок по этому номеру.
-        $mCall = mCall::model() -> findByAttributes(array('fromPhone' => $this -> mangoTalker), ['order' => 'date DESC']);
-        $maxTCall = $this -> getTCall('max');
-        //Теперь выбираем что позже: с лендинга или с манго.
-        $maxCall = $maxTCall;
-        if (($maxTCall)&&($mCall)) {
-            $delta = $maxTCall -> getCallTime() - $mCall -> getCallTime();
-            $t1 = date('c', $maxTCall -> getCallTime());
-            $t2 = date('c', $mCall -> getCallTime());
-            if ($delta > -30) {
-                $maxCall = $maxTCall;
-            } else {
-                $maxCall = $mCall;
-            }
-        } elseif($mCall) {
-            $maxCall = $mCall;
-        } elseif($maxTCall) {
-            $maxCall = $maxTCall;
-        } else {
+        $maxCall = $this -> getLineDefiner();
 
-        }
         if ($maxCall) {
             $this -> i = $maxCall -> getLineI();
         }
         return $this -> i;
+    }
+
+    /**
+     * @return iATSCall|null
+     */
+    private function getLineDefiner(){
+        if (!$this -> _lineDefiner) {
+            $len = mb_strlen($this->mangoTalker, "utf-8");
+            if ($len == 7) {
+                $this->mangoTalker = '7812' . $this->mangoTalker;
+            } elseif ($len == 10) {
+                $this->mangoTalker = '7' . $this->mangoTalker;
+            }
+            $calls = [];
+            //Получили самый поздний манго звонок по этому номеру.
+            $calls['mango'] = mCall::model()->findByAttributes(array('fromPhone' => $this->mangoTalker), ['order' => 'date DESC']);
+            $calls['telfin'] = $this->getTCall('max');
+            $calls['form'] = FormSubmit::model()->findByAttributes(array('numberFormatted' => $this->mangoTalker), ['order' => 'date DESC']);
+            $calls = array_filter($calls);
+
+            $maxCall = null;
+            $save = -1;
+            foreach ($calls as $call) {
+                if (!($call instanceof iATSCall)) {
+                    continue;
+                }
+                /**
+                 * @type iATSCall $call
+                 */
+                $time = $call->getCallTime();
+                if ($time > $save) {
+                    $save = $time;
+                    $maxCall = $call;
+                }
+            }
+            $this -> _lineDefiner = $maxCall;
+        }
+        return $this -> _lineDefiner;
     }
 
     /**
